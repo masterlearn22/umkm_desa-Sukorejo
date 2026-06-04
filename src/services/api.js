@@ -273,6 +273,7 @@ export const fetchProducts = async () => {
 
 export const submitOrder = async (orderData, cartItems) => {
   const payload = {
+    action: 'order',
     orderId: orderData.orderId,
     name: orderData.name,
     phone: orderData.phone,
@@ -303,6 +304,39 @@ export const submitOrder = async (orderData, cartItems) => {
     return result;
   } catch (error) {
     console.warn("Failed to submit to GAS. Simulating success.", error);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ status: 'success' });
+      }, 1000);
+    });
+  }
+};
+
+export const registerUser = async (userData) => {
+  const payload = {
+    action: 'register',
+    name: userData.name,
+    phone: userData.phone,
+    email: userData.email,
+    password: userData.password,
+    address: userData.address,
+    timestamp: new Date().toISOString()
+  };
+
+  try {
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      }
+    });
+    
+    if (!response.ok) throw new Error('Network response was not ok');
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.warn("Failed to register to GAS. Simulating success.", error);
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ status: 'success' });

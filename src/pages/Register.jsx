@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { registerUser } from '../services/api';
 import { UserPlus } from 'lucide-react';
 
 export const Register = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -19,25 +21,38 @@ export const Register = () => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
-    // Simulate registration
-    const savedUserStr = localStorage.getItem('umkm-registered-users');
-    let users = savedUserStr ? JSON.parse(savedUserStr) : [];
-    
-    if (users.find(u => u.email === formData.email)) {
-      alert('Email sudah terdaftar!');
-      return;
-    }
+    try {
+      // Simulate checking existing user
+      const savedUserStr = localStorage.getItem('umkm-registered-users');
+      let users = savedUserStr ? JSON.parse(savedUserStr) : [];
+      
+      if (users.find(u => u.email === formData.email)) {
+        alert('Email sudah terdaftar!');
+        setIsSubmitting(false);
+        return;
+      }
 
-    users.push(formData);
-    localStorage.setItem('umkm-registered-users', JSON.stringify(users));
-    
-    // Auto login
-    const { password, ...userSession } = formData;
-    login(userSession);
-    navigate('/');
+      // 1. Submit to Google Apps Script Database
+      await registerUser(formData);
+
+      // 2. Save locally for session
+      users.push(formData);
+      localStorage.setItem('umkm-registered-users', JSON.stringify(users));
+      
+      // 3. Auto login
+      const { password, ...userSession } = formData;
+      login(userSession);
+      navigate('/');
+    } catch (error) {
+      console.error(error);
+      alert('Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -116,9 +131,11 @@ export const Register = () => {
 
           <button
             type="submit"
-            className="w-full py-4 px-6 bg-stone-900 text-white rounded-full font-bold uppercase tracking-widest text-sm hover:bg-stone-800 transition-all flex items-center justify-center gap-2"
+            disabled={isSubmitting}
+            className="w-full py-4 px-6 bg-stone-900 text-white rounded-full font-bold uppercase tracking-widest text-sm hover:bg-stone-800 transition-all flex items-center justify-center gap-2 disabled:bg-stone-400"
           >
-            Buat Akun <UserPlus size={18} />
+            {isSubmitting ? 'Memproses...' : 'Buat Akun'} 
+            {!isSubmitting && <UserPlus size={18} />}
           </button>
           
           <p className="text-center text-sm text-stone-600">
