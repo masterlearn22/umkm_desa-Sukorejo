@@ -1,11 +1,13 @@
 import React from 'react';
-import { X, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ArrowRight, ShoppingCart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 
-const CartSidebar = ({ isOpen, onClose, onCheckout }) => {
+const CartSidebar = ({ isOpen, onClose }) => {
   const { lang, t } = useLanguage();
   const { cartItems, updateQuantity, removeFromCart, cartTotal, cartWeight } = useCart();
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -26,6 +28,11 @@ const CartSidebar = ({ isOpen, onClose, onCheckout }) => {
 
   const getProductName = (item) => {
     return lang === 'en' && item.Nama_Eng ? item.Nama_Eng : item.Nama_Indo;
+  };
+
+  const handleCheckout = () => {
+    onClose();
+    navigate('/payment');
   };
 
   return (
@@ -54,7 +61,7 @@ const CartSidebar = ({ isOpen, onClose, onCheckout }) => {
         <div className="flex-1 overflow-y-auto p-6 bg-stone-50">
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-stone-400 space-y-4">
-              <ShoppingCartIcon size={48} className="opacity-20" />
+              <ShoppingCart size={48} className="opacity-20" />
               <p>{t('emptyCart')}</p>
             </div>
           ) : (
@@ -127,10 +134,7 @@ const CartSidebar = ({ isOpen, onClose, onCheckout }) => {
             </div>
             
             <button 
-              onClick={() => {
-                onClose();
-                onCheckout();
-              }}
+              onClick={handleCheckout}
               className="w-full py-4 px-6 bg-stone-900 text-white rounded-full font-bold text-lg hover:bg-stone-800 hover:shadow-lg transition-all flex items-center justify-center space-x-2 group"
             >
               <span>{t('checkout')}</span>

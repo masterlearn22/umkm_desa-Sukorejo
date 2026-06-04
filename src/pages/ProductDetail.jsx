@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useCart } from '../context/CartContext';
 import { ChevronDown, ChevronUp, Share2, HelpCircle, Leaf, ShieldCheck, MapPin, Recycle, Minus, Plus } from 'lucide-react';
 
 const ProductDetail = ({ products }) => {
   const { id } = useParams();
   const { lang, t } = useLanguage();
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
+  
   const [product, setProduct] = useState(null);
   
   // Accordion state
-  const [openSections, setOpenSections] = useState({
+  const [openSections, setSections] = useState({
     description: true,
     specs: false,
     shipping: false
@@ -52,10 +56,17 @@ const ProductDetail = ({ products }) => {
   const isOutOfStock = product.Status === 'Habis';
 
   const toggleSection = (section) => {
-    setOpenSections(prev => ({
+    setSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
+  };
+
+  const handleBuyNow = () => {
+    if (!isOutOfStock) {
+      addToCart(product, quantity);
+      navigate('/payment');
+    }
   };
 
   return (
@@ -128,6 +139,7 @@ const ProductDetail = ({ products }) => {
                 </button>
               </div>
               <button 
+                onClick={handleBuyNow}
                 className={`flex-1 h-14 rounded-full font-bold tracking-widest uppercase transition-colors ${
                   isOutOfStock 
                     ? 'bg-stone-100 text-stone-400 cursor-not-allowed' 

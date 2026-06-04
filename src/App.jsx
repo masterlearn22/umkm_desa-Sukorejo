@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CartSidebar from './components/CartSidebar';
-import CheckoutForm from './components/CheckoutForm';
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import ProductDetail from './pages/ProductDetail';
 import AboutUs from './pages/AboutUs';
+import Payment from './pages/Payment';
 import Footer from './components/Footer';
 import { fetchProducts } from './services/api';
 import { useLanguage } from './context/LanguageContext';
@@ -18,7 +18,6 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -52,6 +51,7 @@ const App = () => {
           } />
           <Route path="/produk/:id" element={<ProductDetail products={products} />} />
           <Route path="/tentang-kami" element={<AboutUs />} />
+          <Route path="/payment" element={<Payment />} />
         </Routes>
       </main>
 
@@ -60,12 +60,6 @@ const App = () => {
       <CartSidebar 
         isOpen={isCartOpen} 
         onClose={() => setIsCartOpen(false)} 
-        onCheckout={() => setIsCheckoutOpen(true)}
-      />
-
-      <CheckoutForm 
-        isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
       />
     </div>
   );
