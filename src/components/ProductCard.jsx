@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
 const ProductCard = ({ product }) => {
@@ -30,41 +31,43 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="group w-full cursor-pointer flex flex-col h-full bg-[#f4f2ec] rounded-xl overflow-hidden hover:shadow-md transition-shadow">
-      
-      {/* Image Container */}
-      <div className="relative w-full aspect-[4/3] bg-stone-100 overflow-hidden">
-        {product.Foto_URL ? (
-          <img 
-            src={product.Foto_URL} 
-            alt={title} 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-stone-400">
-            No Image
-          </div>
-        )}
-        {renderBadge()}
-      </div>
-
-      {/* Content Container */}
-      <div className="p-5 flex flex-col flex-grow bg-white">
-        <h3 className="text-sm font-bold text-stone-900 mb-1 line-clamp-2 uppercase tracking-wide">
-          {title}
-        </h3>
-        <p className="text-xs text-stone-500 line-clamp-1 mb-3">
-          {product.Kategori} - {product.Berat_Gram >= 1000 ? `${product.Berat_Gram / 1000} kg` : `${product.Berat_Gram} g`}
-        </p>
+    <Link to={`/produk/${product.ID_Produk}`} className="block h-full outline-none">
+      <div className="group w-full cursor-pointer flex flex-col h-full bg-[#f4f2ec] rounded-xl overflow-hidden hover:shadow-md transition-shadow">
         
-        <div className="mt-auto pt-2">
-          <p className="text-sm font-bold text-stone-900">
-            {formatPrice(product.Harga_Rp)}
-          </p>
+        {/* Image Container */}
+        <div className="relative w-full aspect-[4/3] bg-stone-100 overflow-hidden">
+          {product.Foto_URL ? (
+            <img 
+              src={product.Foto_URL} 
+              alt={title} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-stone-400">
+              No Image
+            </div>
+          )}
+          {renderBadge()}
         </div>
+
+        {/* Content Container */}
+        <div className="p-5 flex flex-col flex-grow bg-white">
+          <h3 className="text-sm font-bold text-stone-900 mb-1 line-clamp-2 uppercase tracking-wide group-hover:text-stone-600 transition-colors">
+            {title}
+          </h3>
+          <p className="text-xs text-stone-500 line-clamp-1 mb-3">
+            {product.Kategori} - {product.Berat_Gram >= 1000 ? `${product.Berat_Gram / 1000} kg` : `${product.Berat_Gram} g`}
+          </p>
+          
+          <div className="mt-auto pt-2">
+            <p className="text-sm font-bold text-stone-900">
+              {formatPrice(product.Harga_Rp)}
+            </p>
+          </div>
+        </div>
+        
       </div>
-      
-    </div>
+    </Link>
   );
 };
 

@@ -5,6 +5,7 @@ import CartSidebar from './components/CartSidebar';
 import CheckoutForm from './components/CheckoutForm';
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
+import ProductDetail from './pages/ProductDetail';
 import Footer from './components/Footer';
 import { fetchProducts } from './services/api';
 import { useLanguage } from './context/LanguageContext';
@@ -58,6 +59,7 @@ const App = () => {
               setSearchQuery={setSearchQuery}
             />
           } />
+          <Route path="/produk/:id" element={<ProductDetail products={products} />} />
         </Routes>
       </main>
 
