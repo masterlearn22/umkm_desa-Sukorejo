@@ -4,9 +4,9 @@ import ProductCard from './ProductCard';
 const ProductList = ({ products, loading }) => {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <div className="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-6 custom-scrollbar">
         {[1, 2, 3, 4, 5, 6].map(i => (
-          <div key={i} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-stone-100 animate-pulse">
+          <div key={i} className="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-1rem)] bg-white rounded-3xl overflow-hidden shadow-sm border border-stone-100 animate-pulse">
             <div className="h-64 bg-stone-200"></div>
             <div className="p-6">
               <div className="h-6 bg-stone-200 rounded w-3/4 mb-4"></div>
@@ -29,9 +29,11 @@ const ProductList = ({ products, loading }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <div className="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-6 custom-scrollbar">
       {products.map(product => (
-        <ProductCard key={product.ID_Produk} product={product} />
+        <div key={product.ID_Produk} className="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-1rem)]">
+          <ProductCard product={product} />
+        </div>
       ))}
     </div>
   );
