@@ -2,12 +2,19 @@
 
 @theme {
   --font-sans: "Plus Jakarta Sans", Inter, sans-serif;
-  --font-heading: "Playfair Display", serif;
+  --font-heading: "Montserrat", "Plus Jakarta Sans", sans-serif;
+  
+  --animate-marquee: marquee 25s linear infinite;
+  
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
 }
 
 @layer base {
   body {
-    @apply bg-stone-50 text-stone-900 font-sans;
+    @apply bg-[#f4f2ec] text-stone-900 font-sans;
   }
 }
 

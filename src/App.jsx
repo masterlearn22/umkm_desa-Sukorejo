@@ -5,6 +5,7 @@ import CartSidebar from './components/CartSidebar';
 import CheckoutForm from './components/CheckoutForm';
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
+import Footer from './components/Footer';
 import { fetchProducts } from './services/api';
 import { useLanguage } from './context/LanguageContext';
 
@@ -63,12 +64,7 @@ const App = () => {
         </Routes>
       </main>
 
-      <footer className="bg-stone-900 text-stone-300 py-8 text-center mt-auto">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="mb-2">&copy; {new Date().getFullYear()} BUMDes Sukorejo. All rights reserved.</p>
-          <p className="text-sm opacity-75">Platform Digital Katalog & WA Order UMKM Desa Sukorejo</p>
-        </div>
-      </footer>
+      <Footer />
 
       <CartSidebar 
         isOpen={isCartOpen} 
