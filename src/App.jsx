@@ -53,10 +53,7 @@ const App = () => {
           <Route path="/katalog" element={
             <Catalog 
               products={products} 
-              loading={loading} 
-              categories={categories}
-              activeCategory={activeCategory}
-              setActiveCategory={setActiveCategory}
+              loading={loading}
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
             />

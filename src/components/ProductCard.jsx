@@ -15,79 +15,55 @@ const ProductCard = ({ product }) => {
     }).format(price);
   };
 
-  const formatWeight = (gram) => {
-    if (gram >= 1000) {
-      return `${gram / 1000} kg`;
-    }
-    return `${gram} g`;
-  };
-
   // Badge logic
   const renderBadge = () => {
     if (product.Status === 'Ready') {
-      return <span className="absolute top-4 right-4 bg-stone-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{t('ready')}</span>;
+      return <span className="absolute top-3 left-3 bg-stone-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">{t('ready')}</span>;
     } else if (product.Status === 'Unggulan') {
-      return <span className="absolute top-4 right-4 bg-stone-900 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{t('bestSeller')}</span>;
+      return <span className="absolute top-3 left-3 bg-stone-900 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">{t('bestSeller')}</span>;
     } else if (product.Status === 'Habis') {
-      return <span className="absolute top-4 right-4 bg-stone-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{t('outOfStock')}</span>;
+      return <span className="absolute top-3 left-3 bg-stone-400 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">{t('outOfStock')}</span>;
     } else if (product.Status === 'Ekspor') {
-      return <span className="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{t('exportReady')}</span>;
+      return <span className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">{t('exportReady')}</span>;
     }
     return null;
   };
 
   return (
-    <div className="group h-[28rem] w-full perspective-1000 cursor-pointer">
-      <div className="relative w-full h-full transition-transform duration-700 transform-style-3d group-hover:rotate-y-180">
-        
-        {/* Front Face: Image and Title only */}
-        <div className="absolute inset-0 w-full h-full backface-hidden bg-white rounded-[2rem] shadow-sm border border-stone-100 flex flex-col overflow-hidden">
-          <div className="relative h-3/4 w-full bg-stone-100">
-            {product.Foto_URL ? (
-              <img 
-                src={product.Foto_URL} 
-                alt={title} 
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-stone-400">
-                No Image
-              </div>
-            )}
-            {renderBadge()}
+    <div className="group w-full cursor-pointer flex flex-col h-full bg-[#f4f2ec] rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+      
+      {/* Image Container */}
+      <div className="relative w-full aspect-[4/3] bg-stone-100 overflow-hidden">
+        {product.Foto_URL ? (
+          <img 
+            src={product.Foto_URL} 
+            alt={title} 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-stone-400">
+            No Image
           </div>
-          <div className="h-1/4 p-6 flex items-center justify-center text-center bg-white">
-            <h3 className="text-xl lg:text-2xl font-heading font-bold text-stone-900 leading-tight">
-              {title}
-            </h3>
-          </div>
-        </div>
+        )}
+        {renderBadge()}
+      </div>
 
-        {/* Back Face: Product Information */}
-        <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-stone-900 text-stone-50 rounded-[2rem] p-8 flex flex-col overflow-y-auto custom-scrollbar shadow-xl border border-stone-800">
-          <div className="mb-6 border-b border-stone-700 pb-4">
-            <h3 className="text-2xl font-heading font-bold text-white leading-tight mb-4">
-              {title}
-            </h3>
-            <div className="flex flex-wrap gap-2 mb-4">
-               <span className="text-xs font-medium text-stone-900 bg-stone-100 px-3 py-1 rounded-full">
-                 {formatWeight(product.Berat_Gram)}
-               </span>
-               <span className="text-xs font-medium text-stone-100 bg-stone-700 px-3 py-1 rounded-full">
-                 {product.Kategori}
-               </span>
-            </div>
-            <p className="text-2xl font-bold text-white">
-              {formatPrice(product.Harga_Rp)}
-            </p>
-          </div>
-          
-          <p className="text-stone-300 text-base leading-relaxed flex-grow">
-            {description}
+      {/* Content Container */}
+      <div className="p-5 flex flex-col flex-grow bg-white">
+        <h3 className="text-sm font-bold text-stone-900 mb-1 line-clamp-2 uppercase tracking-wide">
+          {title}
+        </h3>
+        <p className="text-xs text-stone-500 line-clamp-1 mb-3">
+          {product.Kategori} - {product.Berat_Gram >= 1000 ? `${product.Berat_Gram / 1000} kg` : `${product.Berat_Gram} g`}
+        </p>
+        
+        <div className="mt-auto pt-2">
+          <p className="text-sm font-bold text-stone-900">
+            {formatPrice(product.Harga_Rp)}
           </p>
         </div>
-
       </div>
+      
     </div>
   );
 };
