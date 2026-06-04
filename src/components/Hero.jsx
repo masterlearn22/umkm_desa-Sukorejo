@@ -6,11 +6,11 @@ import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 
 const heroImages = [
-  '/assets/images/dragon_fruit_1780579681534.png',
-  '/assets/images/dragon_fruit_seedling_1780579696787.png',
-  '/assets/images/dragon_fruit_juice_1780579713413.png',
-  '/assets/images/dragon_fruit_jam_1780579726270.png',
-  '/assets/images/dragon_fruit_chips_1780579741290.png'
+  { src: '/assets/images/dragon_fruit_1780579681534.png', title: 'Buah Naga Merah Segar' },
+  { src: '/assets/images/dragon_fruit_seedling_1780579696787.png', title: 'Bibit Buah Naga Unggulan' },
+  { src: '/assets/images/dragon_fruit_juice_1780579713413.png', title: 'Jus Buah Naga Segar' },
+  { src: '/assets/images/dragon_fruit_jam_1780579726270.png', title: 'Selai Buah Naga Premium' },
+  { src: '/assets/images/dragon_fruit_chips_1780579741290.png', title: 'Keripik Buah Naga Renyah' }
 ];
 
 const Hero = () => {
@@ -25,8 +25,8 @@ const Hero = () => {
           modules={[Autoplay]}
           onSwiper={setSwiperInstance}
           onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-          spaceBetween={8}
-          slidesPerView={1.15}
+          spaceBetween={4}
+          slidesPerView={1.1}
           centeredSlides={true}
           loop={true}
           autoplay={{
@@ -35,27 +35,27 @@ const Hero = () => {
           }}
           breakpoints={{
             640: {
-              slidesPerView: 1.3,
-              spaceBetween: 12,
+              slidesPerView: 1.15,
+              spaceBetween: 8,
             },
             1024: {
-              slidesPerView: 1.5,
-              spaceBetween: 16,
+              slidesPerView: 1.25,
+              spaceBetween: 10,
             }
           }}
           className="w-full"
         >
-          {heroImages.map((src, index) => (
+          {heroImages.map((item, index) => (
             <SwiperSlide key={index} className="flex justify-center items-center py-4">
               {({ isActive }) => (
                 <div 
                   className={`relative w-full h-[60vh] sm:h-[70vh] lg:h-[80vh] min-h-[500px] rounded-xl overflow-hidden shadow-md group transition-all duration-500 ease-out ${
-                    isActive ? 'scale-100 opacity-100' : 'scale-[0.97] opacity-60'
+                    isActive ? 'scale-100 opacity-100' : 'scale-[0.98] opacity-50'
                   }`}
                 >
                   <img 
-                    src={src} 
-                    alt={`Produk Unggulan ${index + 1}`} 
+                    src={item.src} 
+                    alt={item.title} 
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                   />
                   
@@ -64,8 +64,8 @@ const Hero = () => {
                   
                   {/* Content (only fully visible on active slide) */}
                   <div className={`absolute bottom-12 left-0 right-0 flex flex-col items-center justify-center px-4 text-center transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white uppercase tracking-widest mb-6 drop-shadow-lg">
-                      PRODUK FAVORIT
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-black text-white uppercase tracking-widest mb-6 drop-shadow-lg">
+                      {item.title}
                     </h1>
                     <Link 
                       to="/katalog" 
