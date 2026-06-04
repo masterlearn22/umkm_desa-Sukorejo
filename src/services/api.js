@@ -10,7 +10,7 @@ const mockProducts = [
     Kategori: 'Fresh',
     Harga_Rp: 15000,
     Berat_Gram: 1000,
-    Foto_URL: 'https://images.unsplash.com/photo-1527325678964-54921661f888?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    Foto_URL: '/assets/images/dragon_fruit_1780579681534.png',
     Status: 'Ready',
     Deskripsi_Indo: 'Buah naga merah segar langsung dipetik dari kebun organik Pak Tarno di sisi timur Desa Sukorejo. Ditanam tanpa pestisida kimia, memiliki rasa manis alami dengan tingkat brix di atas rata-rata. Daging buahnya sangat tebal dan kaya akan antioksidan, cocok untuk dikonsumsi langsung atau dijadikan jus sehat.',
     Deskripsi_Eng: 'Fresh red dragon fruit picked directly from Pak Tarno\'s organic farm in the eastern part of Sukorejo Village. Grown without chemical pesticides, it has a naturally sweet taste with above-average brix levels. The flesh is very thick and rich in antioxidants, perfect for direct consumption or healthy juice.'
@@ -34,7 +34,7 @@ const mockProducts = [
     Kategori: 'Craft',
     Harga_Rp: 50000,
     Berat_Gram: 1500,
-    Foto_URL: 'https://images.unsplash.com/photo-1596431940177-3e11f71df420?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    Foto_URL: '/assets/images/dragon_fruit_seedling_1780579696787.png',
     Status: 'Ekspor',
     Deskripsi_Indo: 'Bibit stek buah naga jenis Hylocereus polyrhizus (merah) yang telah melewati masa karantina dan rooting sempurna. Dikembangkan oleh Pak Jo, petani senior Desa Sukorejo. Bibit ini dijamin bebas virus dan jamur, tingkat persentase hidup 99%, dan siap berbuah pada usia tanam 8-10 bulan jika dirawat dengan baik.',
     Deskripsi_Eng: 'Hylocereus polyrhizus (red) dragon fruit cuttings that have passed quarantine and perfect rooting. Developed by Pak Jo, a senior farmer. Guaranteed virus and fungus free, 99% survival rate, and ready to bear fruit at 8-10 months of age if well maintained.'
@@ -58,7 +58,7 @@ const mockProducts = [
     Kategori: 'Processed',
     Harga_Rp: 25000,
     Berat_Gram: 250,
-    Foto_URL: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    Foto_URL: '/assets/images/dragon_fruit_jam_1780579726270.png',
     Status: 'Unggulan',
     Deskripsi_Indo: 'Selai home-made buatan Mbak Minah yang terbuat dari 100% buah naga merah asli Sukorejo dan gula tebu murni, tanpa tambahan pektin sintetis maupun pengawet. Dimasak perlahan (slow-cooked) untuk mempertahankan aroma khas buah naga. Cocok dioleskan pada roti gandum atau sebagai topping yogurt.',
     Deskripsi_Eng: 'Home-made jam by Mbak Minah made from 100% authentic Sukorejo red dragon fruit and pure cane sugar, without synthetic pectin or preservatives. Slow-cooked to retain the signature aroma. Perfect spread on whole wheat bread or as a yogurt topping.'
@@ -70,7 +70,7 @@ const mockProducts = [
     Kategori: 'Processed',
     Harga_Rp: 35000,
     Berat_Gram: 150,
-    Foto_URL: 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    Foto_URL: '/assets/images/dragon_fruit_chips_1780579741290.png',
     Status: 'Ready',
     Deskripsi_Indo: 'Camilan sehat masa kini! Keripik buah naga Kang Maman diproses menggunakan mesin vacuum frying bersuhu rendah. Proses ini menghilangkan kadar air tanpa merusak nutrisi dan warna alaminya. Hasilnya adalah keripik yang super renyah, manis alami, dan bebas kolesterol. Kemasan ziplock menjaga kerenyahan.',
     Deskripsi_Eng: 'Today\'s healthy snack! Kang Maman\'s dragon fruit chips are processed using a low-temperature vacuum frying machine. This removes moisture without destroying natural nutrients and color. The result is super crispy, naturally sweet, cholesterol-free chips. Ziplock packaging maintains crispness.'
@@ -82,7 +82,7 @@ const mockProducts = [
     Kategori: 'Processed',
     Harga_Rp: 40000,
     Berat_Gram: 500,
-    Foto_URL: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    Foto_URL: '/assets/images/dragon_fruit_juice_1780579713413.png',
     Status: 'Ready',
     Deskripsi_Indo: 'Sirup kental ekstrak buah naga resep warisan Mbah Darmo. Diekstrak menggunakan metode cold-press untuk menjaga kesegaran vitamin C. Cukup campurkan 3 sendok makan sirup dengan air es dan perasan jeruk nipis untuk minuman pelepas dahaga yang menyehatkan di siang hari yang terik.',
     Deskripsi_Eng: 'Thick dragon fruit extract syrup from Mbah Darmo\'s heritage recipe. Extracted using cold-press method to maintain vitamin C freshness. Just mix 3 tablespoons of syrup with ice water and lime juice for a healthy thirst-quenching drink on a hot day.'
