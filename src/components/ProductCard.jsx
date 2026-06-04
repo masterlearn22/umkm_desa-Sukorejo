@@ -40,9 +40,9 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-stone-100 flex flex-col group">
+    <div className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-stone-100 flex flex-col group">
       
-      <div className="relative h-64 overflow-hidden bg-stone-100">
+      <div className="relative h-80 overflow-hidden bg-stone-100">
         {product.Foto_URL ? (
           <img 
             src={product.Foto_URL} 
@@ -57,31 +57,34 @@ const ProductCard = ({ product }) => {
         {renderBadge()}
       </div>
 
-      <div className="p-6 flex flex-col flex-grow">
-        <div className="flex justify-between items-start mb-2 gap-2">
-          <h3 className="text-xl font-heading font-bold text-stone-900 leading-tight">
-            {title}
-          </h3>
-          <span className="text-sm font-medium text-stone-500 whitespace-nowrap bg-stone-100 px-2 py-1 rounded-md">
-            {formatWeight(product.Berat_Gram)}
-          </span>
+      <div className="p-8 flex flex-col flex-grow">
+        <div className="mb-4">
+          <div className="flex flex-wrap items-center gap-3 mb-2">
+            <h3 className="text-2xl font-heading font-bold text-stone-900 leading-tight">
+              {title}
+            </h3>
+            <span className="text-sm font-medium text-stone-500 bg-stone-100 px-3 py-1 rounded-full">
+              {formatWeight(product.Berat_Gram)}
+            </span>
+          </div>
+          <p className="text-xl font-bold text-stone-900">
+            {formatPrice(product.Harga_Rp)}
+          </p>
         </div>
         
-        <p className="text-stone-600 text-sm mb-6 line-clamp-2 flex-grow">
+        <p className="text-stone-600 text-base leading-relaxed mb-8 flex-grow">
           {description}
         </p>
 
-        <div className="flex items-center justify-between mt-auto">
-          <span className="text-xl font-bold text-stone-900">
-            {formatPrice(product.Harga_Rp)}
-          </span>
+        <div className="mt-auto">
           <button 
             onClick={() => addToCart(product)}
             disabled={product.Status === 'Habis'}
-            className="p-3 bg-stone-900 text-white rounded-full hover:bg-stone-700 transition-colors disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed group/btn"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-stone-900 text-white font-medium rounded-full hover:bg-stone-800 transition-colors disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed group/btn"
             aria-label={t('addToCart')}
           >
-            <ShoppingCart size={20} className="group-hover/btn:scale-110 transition-transform" />
+            <ShoppingCart size={18} className="group-hover/btn:scale-110 transition-transform" />
+            <span>{t('addToCart')}</span>
           </button>
         </div>
       </div>

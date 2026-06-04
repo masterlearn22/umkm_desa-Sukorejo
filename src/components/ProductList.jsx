@@ -4,7 +4,7 @@ import ProductCard from './ProductCard';
 const ProductList = ({ products, loading }) => {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {[1, 2, 3, 4, 5, 6].map(i => (
           <div key={i} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-stone-100 animate-pulse">
             <div className="h-64 bg-stone-200"></div>
@@ -29,7 +29,7 @@ const ProductList = ({ products, loading }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
       {products.map(product => (
         <ProductCard key={product.ID_Produk} product={product} />
       ))}
