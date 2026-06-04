@@ -1,87 +1,88 @@
-// ==========================================
-// GOOGLE APPS SCRIPT FOR BUMDES SUKOREJO
-// ==========================================
+const SHEET_PRODUK = "Produk";
+const SHEET_PESANAN = "Pesanan";
+const SHEET_PENGGUNA = "Pengguna"; // <-- Ini kunci utamanya!
 
-const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID_HERE'; // Ganti dengan ID Spreadsheet Anda
-const TAB_PRODUK = 'Produk';
-const TAB_PESANAN = 'Pesanan_Masuk';
-
-// Fungsi GET untuk mengambil data produk dari sheet "Produk"
 function doGet(e) {
   try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(TAB_PRODUK);
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PRODUK);
+    if (!sheet) return ContentService.createTextOutput("[]").setMimeType(ContentService.MimeType.JSON);
+
     const data = sheet.getDataRange().getValues();
-    
-    // Asumsi baris 1 adalah header
     const headers = data[0];
     const products = [];
-    
+
     for (let i = 1; i < data.length; i++) {
-      const row = data[i];
-      const product = {};
+      let product = {};
       for (let j = 0; j < headers.length; j++) {
-        product[headers[j]] = row[j];
+        product[headers[j]] = data[i][j];
       }
       products.push(product);
     }
-    
-    return ContentService
-      .createTextOutput(JSON.stringify(products))
-      .setMimeType(ContentService.MimeType.JSON);
-      
+    return ContentService.createTextOutput(JSON.stringify(products)).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ 'error': error.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ error: error.message })).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
-// Fungsi POST untuk menerima data pesanan dan mencatatnya ke sheet "Pesanan_Masuk"
 function doPost(e) {
   try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(TAB_PESANAN);
-    
-    // Parse data JSON yang dikirim dari React
-    let data;
-    try {
-      data = JSON.parse(e.postData.contents);
-    } catch(err) {
-      data = e.parameter;
+    const payload = JSON.parse(e.postData.contents);
+    const action = payload.action;
+
+    // 1. JIKA YANG DIKIRIM ADALAH REGISTRASI PENGGUNA BARU
+    if (action === 'register') {
+      let targetSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PENGGUNA);
+      if (!targetSheet) {
+        targetSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet(SHEET_PENGGUNA);
+        targetSheet.appendRow(["Waktu_Daftar", "Nama", "Nomor_WA", "Email", "Password", "Alamat"]);
+      }
+
+      targetSheet.appendRow([
+        payload.timestamp,
+        payload.name,
+        "'" + payload.phone, 
+        payload.email,
+        payload.password,
+        payload.address
+      ]);
+
+      return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    // Format detail pesanan menjadi string yang rapi
-    const detailPesanan = data.cartItems ? data.cartItems.map(item => `${item.name} (x${item.quantity})`).join(", ") : "-";
-    
-    // Siapkan baris baru sesuai urutan kolom:
-    // Timestamp | ID_Pesanan | Nama_Pembeli | No_WA | Negara | Alamat_Lengkap | Detail_Pesanan | Total_Harga | Status_Proses
-    const newRow = [
-      data.timestamp || new Date(),
-      data.orderId || "-",
-      data.name || "-",
-      data.phone || "-",
-      data.country || "-",
-      data.address || "-",
-      detailPesanan,
-      data.totalPrice || 0,
-      "Pending" // Status default
-    ];
-    
-    sheet.appendRow(newRow);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({ 'status': 'success', 'orderId': data.orderId }))
-      .setMimeType(ContentService.MimeType.JSON);
+    // 2. JIKA YANG DIKIRIM ADALAH PESANAN (CHECKOUT)
+    else {
+      let targetSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PESANAN);
+      if (!targetSheet) {
+        targetSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet(SHEET_PESANAN);
+        targetSheet.appendRow([
+          "Waktu", "Order_ID", "Nama_Pelanggan", "Nomor_WA", "Email", 
+          "Alamat", "Kurir", "Metode_Pembayaran", "Total_Harga", "Catatan", "Detail_Produk"
+        ]);
+      }
       
+      const detailProduk = payload.cartItems ? payload.cartItems.map(item => item.name + " (x" + item.quantity + ")").join(", ") : "-";
+
+      targetSheet.appendRow([
+        payload.timestamp,
+        payload.orderId || "-",
+        payload.name || "-",
+        "'" + (payload.phone || "-"), 
+        payload.email || "-",
+        payload.address || "-",
+        payload.courier || "-",
+        payload.paymentMethod || "-",
+        payload.totalPrice || 0,
+        payload.notes || "-",
+        detailProduk
+      ]);
+
+      return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
+    }
   } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ 'status': 'error', 'message': error.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.message })).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
-// Untuk menangani CORS preflight request (OPTIONS) jika diperlukan
 function doOptions(e) {
   const headers = {
     "Access-Control-Allow-Origin": "*",
@@ -89,8 +90,5 @@ function doOptions(e) {
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400"
   };
-  
-  return ContentService.createTextOutput("")
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(headers);
+  return ContentService.createTextOutput("").setMimeType(ContentService.MimeType.JSON).setHeaders(headers);
 }

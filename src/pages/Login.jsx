@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { hashPassword } from '../utils/hash';
 import { LogIn } from 'lucide-react';
 
 export const Login = () => {
@@ -12,14 +13,16 @@ export const Login = () => {
 
   const from = location.state?.from?.pathname || '/';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate login
-    // In a real app, this would verify credentials against a backend
+    
     const savedUserStr = localStorage.getItem('umkm-registered-users');
     let users = savedUserStr ? JSON.parse(savedUserStr) : [];
     
-    const foundUser = users.find(u => u.email === email && u.password === password);
+    // Hash input password to compare with the hashed password in local storage
+    const hashedInputPass = await hashPassword(password);
+    
+    const foundUser = users.find(u => u.email === email && u.password === hashedInputPass);
     
     if (foundUser) {
       // Omit password from saved session

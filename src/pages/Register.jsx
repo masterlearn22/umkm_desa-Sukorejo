@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { registerUser } from '../services/api';
+import { hashPassword } from '../utils/hash';
 import { UserPlus } from 'lucide-react';
 
 export const Register = () => {
@@ -36,15 +37,19 @@ export const Register = () => {
         return;
       }
 
-      // 1. Submit to Google Apps Script Database
-      await registerUser(formData);
+      // HASH THE PASSWORD
+      const hashedPass = await hashPassword(formData.password);
+      const secureData = { ...formData, password: hashedPass };
+
+      // 1. Submit to Google Apps Script Database with Hashed Password
+      await registerUser(secureData);
 
       // 2. Save locally for session
-      users.push(formData);
+      users.push(secureData);
       localStorage.setItem('umkm-registered-users', JSON.stringify(users));
       
-      // 3. Auto login
-      const { password, ...userSession } = formData;
+      // 3. Auto login (omit password from session context)
+      const { password, ...userSession } = secureData;
       login(userSession);
       navigate('/');
     } catch (error) {

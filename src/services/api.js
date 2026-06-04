@@ -1,5 +1,5 @@
 // This URL should be replaced with the actual Google Apps Script Web App URL
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxRnnpbBtAEaJljVVPcdf0Q3DpzlhVCrBb7c-I6YLET1fOLdByYnZ2Qlc5k4K6OBTLKzQ/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyVsNCTmjIknym5hg9YyXbIBpacxyBit8FUvLs-dUNAfFd-qyzDGPgpptsu75sQpJaZAg/exec';
 
 // Since we might not have GAS deployed yet, we use mock data if fetch fails
 const mockProducts = [
