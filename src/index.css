@@ -34,6 +34,14 @@
     background: #a8a29e;
   }
   
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
   .perspective-1000 {
     perspective: 1000px;
   }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const heroImages = [
@@ -11,65 +11,104 @@ const heroImages = [
 
 const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollContainerRef = useRef(null);
 
-  // Auto-slide every 5 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev === heroImages.length - 1 ? 0 : prev + 1));
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+  const handleScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const container = scrollContainerRef.current;
+    
+    // Determine which slide is currently in the center of the view
+    const scrollLeft = container.scrollLeft;
+    const containerWidth = container.clientWidth;
+    const centerPosition = scrollLeft + containerWidth / 2;
+    
+    // Find the closest child to the center
+    const children = Array.from(container.children);
+    let closestIndex = 0;
+    let minDistance = Infinity;
+
+    children.forEach((child, index) => {
+      const childCenter = child.offsetLeft + child.clientWidth / 2;
+      const distance = Math.abs(centerPosition - childCenter);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    if (closestIndex !== currentIndex) {
+      setCurrentIndex(closestIndex);
+    }
+  };
+
+  const scrollToSlide = (index) => {
+    if (!scrollContainerRef.current) return;
+    const container = scrollContainerRef.current;
+    const children = Array.from(container.children);
+    const targetChild = children[index];
+    
+    if (targetChild) {
+      // Center the child
+      const scrollPosition = targetChild.offsetLeft - (container.clientWidth / 2) + (targetChild.clientWidth / 2);
+      container.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
-    <div className="w-full bg-[#f4f2ec] pb-8 pt-4">
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Banner Container */}
-        <div className="relative w-full h-[60vh] sm:h-[70vh] lg:h-[80vh] min-h-[500px] rounded-[2rem] overflow-hidden group shadow-md bg-stone-200">
-          
-          {/* Background Images */}
-          {heroImages.map((src, index) => (
+    <div className="w-full bg-[#f4f2ec] pb-8 pt-4 overflow-hidden">
+      
+      {/* Scrollable Container (Center Mode) */}
+      <div 
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 sm:px-[10vw] no-scrollbar items-center"
+      >
+        {heroImages.map((src, index) => (
+          <div 
+            key={index} 
+            className="relative flex-none w-[92vw] sm:w-[80vw] h-[60vh] sm:h-[70vh] lg:h-[80vh] min-h-[500px] rounded-[2rem] snap-center overflow-hidden shadow-md group"
+          >
+            {/* Background Image */}
             <img 
-              key={index}
               src={src} 
               alt={`Produk Unggulan ${index + 1}`} 
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-                index === currentIndex ? 'opacity-100' : 'opacity-0'
-              }`}
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
             />
-          ))}
-          
-          {/* Subtle gradient overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-          
-          {/* Content */}
-          <div className="absolute bottom-12 left-0 right-0 flex flex-col items-center justify-center px-4 text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white uppercase tracking-widest mb-6 drop-shadow-lg">
-              PRODUK FAVORIT
-            </h1>
-            <Link 
-              to="/katalog" 
-              className="bg-white text-stone-900 text-sm font-bold uppercase tracking-widest px-10 py-4 rounded-full hover:bg-stone-200 transition-colors shadow-lg"
-            >
-              BELI SEKARANG
-            </Link>
+            
+            {/* Subtle gradient overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            
+            {/* Content */}
+            <div className="absolute bottom-12 left-0 right-0 flex flex-col items-center justify-center px-4 text-center">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white uppercase tracking-widest mb-6 drop-shadow-lg">
+                PRODUK FAVORIT
+              </h1>
+              <Link 
+                to="/katalog" 
+                className="bg-white text-stone-900 text-sm font-bold uppercase tracking-widest px-10 py-4 rounded-full hover:bg-stone-200 transition-colors shadow-lg"
+              >
+                BELI SEKARANG
+              </Link>
+            </div>
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Slider Dots */}
-        <div className="flex justify-center items-center gap-2 mt-6">
-          {heroImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'w-8 bg-stone-900' : 'w-2 bg-stone-300 hover:bg-stone-400'
-              }`}
-              aria-label={`Slide ${index + 1}`}
-            />
-          ))}
-        </div>
-
+      {/* Slider Dots */}
+      <div className="flex justify-center items-center gap-2 mt-8">
+        {heroImages.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => scrollToSlide(index)}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              index === currentIndex ? 'w-8 bg-stone-900' : 'w-2 bg-stone-300 hover:bg-stone-400'
+            }`}
+            aria-label={`Slide ${index + 1}`}
+          />
+        ))}
       </div>
     </div>
   );
