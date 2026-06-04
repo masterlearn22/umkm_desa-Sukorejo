@@ -28,9 +28,9 @@ const ProductCard = ({ product }) => {
   // Badge logic
   const renderBadge = () => {
     if (product.Status === 'Ready') {
-      return <span className="absolute top-4 right-4 bg-agro-green text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{t('ready')}</span>;
+      return <span className="absolute top-4 right-4 bg-stone-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{t('ready')}</span>;
     } else if (product.Status === 'Unggulan') {
-      return <span className="absolute top-4 right-4 bg-dragon-crimson text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{t('bestSeller')}</span>;
+      return <span className="absolute top-4 right-4 bg-stone-900 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{t('bestSeller')}</span>;
     } else if (product.Status === 'Habis') {
       return <span className="absolute top-4 right-4 bg-stone-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">{t('outOfStock')}</span>;
     } else if (product.Status === 'Ekspor') {
@@ -72,13 +72,13 @@ const ProductCard = ({ product }) => {
         </p>
 
         <div className="flex items-center justify-between mt-auto">
-          <span className="text-xl font-bold text-dragon-crimson">
+          <span className="text-xl font-bold text-stone-900">
             {formatPrice(product.Harga_Rp)}
           </span>
           <button 
             onClick={() => addToCart(product)}
             disabled={product.Status === 'Habis'}
-            className="p-3 bg-dragon-crimson text-white rounded-full hover:bg-rose-700 transition-colors disabled:bg-stone-300 disabled:cursor-not-allowed group/btn"
+            className="p-3 bg-stone-900 text-white rounded-full hover:bg-stone-700 transition-colors disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed group/btn"
             aria-label={t('addToCart')}
           >
             <ShoppingCart size={20} className="group-hover/btn:scale-110 transition-transform" />

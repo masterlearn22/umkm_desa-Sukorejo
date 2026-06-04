@@ -38,13 +38,13 @@ const CartSidebar = ({ isOpen, onClose, onCheckout }) => {
       <div className="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-2xl z-50 flex flex-col transition-transform transform">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-stone-100 bg-eco-cream">
+        <div className="flex items-center justify-between p-6 border-b border-stone-100 bg-white">
           <h2 className="text-xl font-heading font-bold text-stone-900">
             {t('cartTitle')}
           </h2>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-white rounded-full transition-colors text-stone-500 hover:text-dragon-crimson"
+            className="p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-500 hover:text-stone-900"
           >
             <X size={20} />
           </button>
@@ -74,7 +74,7 @@ const CartSidebar = ({ isOpen, onClose, onCheckout }) => {
                       <h4 className="font-bold text-stone-800 text-sm line-clamp-2">
                         {getProductName(item)}
                       </h4>
-                      <p className="text-dragon-crimson font-bold text-sm mt-1">
+                      <p className="text-stone-900 font-bold text-sm mt-1">
                         {formatPrice(item.Harga_Rp)}
                       </p>
                     </div>
@@ -100,7 +100,7 @@ const CartSidebar = ({ isOpen, onClose, onCheckout }) => {
                       
                       <button 
                         onClick={() => removeFromCart(item.ID_Produk)}
-                        className="p-1.5 text-stone-400 hover:text-dragon-crimson hover:bg-rose-50 rounded-full transition-colors"
+                        className="p-1.5 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -122,7 +122,7 @@ const CartSidebar = ({ isOpen, onClose, onCheckout }) => {
               </div>
               <div className="flex justify-between items-end">
                 <span className="text-stone-600 font-medium">{t('totalEstimates')}</span>
-                <span className="text-2xl font-bold text-dragon-crimson">{formatPrice(cartTotal)}</span>
+                <span className="text-2xl font-bold text-stone-900">{formatPrice(cartTotal)}</span>
               </div>
             </div>
             
@@ -131,7 +131,7 @@ const CartSidebar = ({ isOpen, onClose, onCheckout }) => {
                 onClose();
                 onCheckout();
               }}
-              className="w-full py-4 px-6 bg-dragon-crimson text-white rounded-full font-bold text-lg hover:bg-rose-700 hover:shadow-lg transition-all flex items-center justify-center space-x-2 group"
+              className="w-full py-4 px-6 bg-stone-900 text-white rounded-full font-bold text-lg hover:bg-stone-800 hover:shadow-lg transition-all flex items-center justify-center space-x-2 group"
             >
               <span>{t('checkout')}</span>
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />

@@ -64,13 +64,13 @@ const CheckoutForm = ({ isOpen, onClose }) => {
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-full">
           
-          <div className="flex items-center justify-between p-6 border-b border-stone-100 bg-eco-cream">
+          <div className="flex items-center justify-between p-6 border-b border-stone-100 bg-white">
             <h2 className="text-xl font-heading font-bold text-stone-900">
               {t('checkout')}
             </h2>
             <button 
               onClick={onClose}
-              className="p-2 hover:bg-white rounded-full transition-colors text-stone-500 hover:text-dragon-crimson"
+              className="p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-500 hover:text-stone-900"
             >
               <X size={20} />
             </button>
@@ -87,7 +87,7 @@ const CheckoutForm = ({ isOpen, onClose }) => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-dragon-crimson focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-900 focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white"
                 />
               </div>
 
@@ -101,7 +101,7 @@ const CheckoutForm = ({ isOpen, onClose }) => {
                     placeholder="+62..."
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-dragon-crimson focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white"
+                    className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-900 focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white"
                   />
                 </div>
                 <div>
@@ -111,7 +111,7 @@ const CheckoutForm = ({ isOpen, onClose }) => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-dragon-crimson focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white"
+                    className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-900 focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white"
                   />
                 </div>
               </div>
@@ -124,7 +124,7 @@ const CheckoutForm = ({ isOpen, onClose }) => {
                   required
                   value={formData.country}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-dragon-crimson focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-900 focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white"
                 />
               </div>
 
@@ -136,7 +136,7 @@ const CheckoutForm = ({ isOpen, onClose }) => {
                   rows="3"
                   value={formData.address}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-dragon-crimson focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white resize-none"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-900 focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white resize-none"
                 ></textarea>
               </div>
 
@@ -147,7 +147,7 @@ const CheckoutForm = ({ isOpen, onClose }) => {
                   rows="2"
                   value={formData.notes}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-dragon-crimson focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white resize-none"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-900 focus:border-transparent outline-none transition-all bg-stone-50 focus:bg-white resize-none"
                 ></textarea>
               </div>
 
@@ -159,7 +159,7 @@ const CheckoutForm = ({ isOpen, onClose }) => {
               type="submit"
               form="checkout-form"
               disabled={isSubmitting}
-              className="w-full py-4 px-6 bg-dragon-crimson text-white rounded-full font-bold text-lg hover:bg-rose-700 hover:shadow-lg transition-all flex items-center justify-center space-x-2 disabled:bg-stone-400"
+              className="w-full py-4 px-6 bg-stone-900 text-white rounded-full font-bold text-lg hover:bg-stone-800 hover:shadow-lg transition-all flex items-center justify-center space-x-2 disabled:bg-stone-400"
             >
               <span>{isSubmitting ? 'Memproses...' : t('sendOrder')}</span>
               {!isSubmitting && <Send size={20} />}

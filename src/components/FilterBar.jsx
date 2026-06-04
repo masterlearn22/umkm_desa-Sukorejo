@@ -17,7 +17,7 @@ const FilterBar = ({ categories, activeCategory, onCategoryChange, searchQuery, 
               onClick={() => onCategoryChange(cat.id)}
               className={`whitespace-nowrap px-4 py-2 rounded-full font-medium transition-colors text-sm
                 ${activeCategory === cat.id 
-                  ? 'bg-dragon-crimson text-white' 
+                  ? 'bg-stone-900 text-white' 
                   : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
                 }
               `}
@@ -37,7 +37,7 @@ const FilterBar = ({ categories, activeCategory, onCategoryChange, searchQuery, 
             placeholder={t('searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-stone-300 rounded-full leading-5 bg-stone-50 placeholder-stone-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-dragon-crimson focus:border-dragon-crimson sm:text-sm transition-colors"
+            className="block w-full pl-10 pr-3 py-2 border border-stone-300 rounded-full leading-5 bg-stone-50 placeholder-stone-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-stone-900 focus:border-stone-900 sm:text-sm transition-colors"
           />
         </div>
 

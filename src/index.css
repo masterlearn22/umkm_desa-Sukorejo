@@ -1,15 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-dragon-crimson: #C91A54;
-  --color-agro-green: #1E4620;
-  --color-eco-cream: #FAF8F5;
   --font-sans: "Plus Jakarta Sans", Inter, sans-serif;
   --font-heading: "Playfair Display", serif;
 }
 
 @layer base {
   body {
-    @apply bg-eco-cream text-stone-900 font-sans;
+    @apply bg-stone-50 text-stone-900 font-sans;
   }
 }
