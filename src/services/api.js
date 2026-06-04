@@ -249,14 +249,23 @@ export const fetchProducts = async () => {
   try {
     const response = await fetch(GAS_URL);
     if (!response.ok) throw new Error('Network response was not ok');
-    const data = await response.json();
+    let data = await response.json();
+    // Simulate Nomor_WA if backend doesn't provide it
+    data = data.map((item, index) => ({
+      ...item,
+      Nomor_WA: item.Nomor_WA || `628123456789${index % 10}`
+    }));
     return data;
   } catch (error) {
     console.warn("Failed to fetch from GAS. Falling back to mock data.", error);
-    // Simulate network delay
+    // Simulate network delay and append Nomor_WA
+    const modifiedMock = mockProducts.map((item, index) => ({
+      ...item,
+      Nomor_WA: `628123456789${index % 10}` // Fake different numbers for sellers
+    }));
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(mockProducts);
+        resolve(modifiedMock);
       }, 800);
     });
   }

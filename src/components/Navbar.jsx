@@ -60,9 +60,9 @@ const Navbar = ({ onCartClick }) => {
                 <Search size={20} strokeWidth={1.5} />
               </button>
               
-              <button className="text-stone-900 hover:text-stone-500 transition-colors hidden sm:block">
+              <Link to="/profile" className="text-stone-900 hover:text-stone-500 transition-colors hidden sm:block">
                 <User size={20} strokeWidth={1.5} />
-              </button>
+              </Link>
 
               <button 
                 onClick={toggleLanguage}

@@ -1,7 +1,9 @@
 export const generateWhatsAppLink = (orderData, cartItems, cartTotal, lang) => {
-  // Destination Phone Number (Admin BUMDes Sukorejo)
-  // Hardcoded for now. In a real app this might come from env or config
-  const adminPhone = "6281234567890"; 
+  // Destination Phone Number (Dari Penjual Produk Pertama)
+  // Default to a fallback if somehow missing
+  const adminPhone = (cartItems.length > 0 && cartItems[0].Nomor_WA) 
+    ? cartItems[0].Nomor_WA 
+    : "6281234567890"; 
 
   const isId = lang === 'id';
   const greeting = isId 
@@ -23,14 +25,14 @@ export const generateWhatsAppLink = (orderData, cartItems, cartTotal, lang) => {
     return `- ${itemName} (x${item.quantity}) - ${itemTotal}`;
   }).join("\n");
 
-  const shippingHeader = isId ? "Data Pengiriman:" : "Shipping Information:";
+  const shippingHeader = isId ? "Informasi Pengiriman & Pembayaran:" : "Shipping & Payment Info:";
   const totalHeader = isId ? "Total Estimasi:" : "Total Estimates:";
   const invoiceHeader = isId ? "Nomor Invoice Database:" : "Database Invoice Number:";
   const closing = isId ? "Terima kasih!" : "Thank you!";
   
   const shippingDisclaimer = isId ? "(Belum termasuk ongkos kirim)" : "(Shipping cost not included)";
 
-  const message = `[NAMA TOKO / BUMDES SUKOREJO DIGITAL CATALOG]
+  const message = `[BUMDES SUKOREJO DIGITAL CATALOG]
 ${greeting}
 
 ${detailHeader}
@@ -39,8 +41,10 @@ ${itemsText}
 ${shippingHeader}
 Nama: ${orderData.name}
 WhatsApp: ${orderData.phone}
-Negara: ${orderData.country}
+Email: ${orderData.email || '-'}
 Alamat: ${orderData.address}
+Kurir Pengiriman: ${orderData.courier || '-'}
+Metode Pembayaran: ${orderData.paymentMethod || '-'}
 Catatan: ${orderData.notes || '-'}
 
 ${totalHeader} ${formatPrice(cartTotal)} ${shippingDisclaimer}

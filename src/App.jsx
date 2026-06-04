@@ -7,9 +7,13 @@ import Catalog from './pages/Catalog';
 import ProductDetail from './pages/ProductDetail';
 import AboutUs from './pages/AboutUs';
 import Payment from './pages/Payment';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { Profile } from './pages/Profile';
 import Footer from './components/Footer';
 import { fetchProducts } from './services/api';
 import { useLanguage } from './context/LanguageContext';
+import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   const { lang } = useLanguage();
@@ -35,33 +39,38 @@ const App = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50">
-      <Navbar onCartClick={() => setIsCartOpen(true)} />
-      
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home products={products} loading={loading} />} />
-          <Route path="/katalog" element={
-            <Catalog 
-              products={products} 
-              loading={loading}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-            />
-          } />
-          <Route path="/produk/:id" element={<ProductDetail products={products} />} />
-          <Route path="/tentang-kami" element={<AboutUs />} />
-          <Route path="/payment" element={<Payment />} />
-        </Routes>
-      </main>
+    <AuthProvider>
+      <div className="min-h-screen flex flex-col bg-stone-50">
+        <Navbar onCartClick={() => setIsCartOpen(true)} />
+        
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home products={products} loading={loading} />} />
+            <Route path="/katalog" element={
+              <Catalog 
+                products={products} 
+                loading={loading}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
+            } />
+            <Route path="/produk/:id" element={<ProductDetail products={products} />} />
+            <Route path="/tentang-kami" element={<AboutUs />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+        </main>
 
-      <Footer />
+        <Footer />
 
-      <CartSidebar 
-        isOpen={isCartOpen} 
-        onClose={() => setIsCartOpen(false)} 
-      />
-    </div>
+        <CartSidebar 
+          isOpen={isCartOpen} 
+          onClose={() => setIsCartOpen(false)} 
+        />
+      </div>
+    </AuthProvider>
   );
 };
 
