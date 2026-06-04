@@ -1,5 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
+
+import 'swiper/css';
 
 const heroImages = [
   '/assets/images/dragon_fruit_1780579681534.png',
@@ -10,103 +14,83 @@ const heroImages = [
 ];
 
 const Hero = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollContainerRef = useRef(null);
-
-  const handleScroll = () => {
-    if (!scrollContainerRef.current) return;
-    const container = scrollContainerRef.current;
-    
-    // Determine which slide is currently in the center of the view
-    const scrollLeft = container.scrollLeft;
-    const containerWidth = container.clientWidth;
-    const centerPosition = scrollLeft + containerWidth / 2;
-    
-    // Find the closest child to the center
-    const children = Array.from(container.children);
-    let closestIndex = 0;
-    let minDistance = Infinity;
-
-    children.forEach((child, index) => {
-      const childCenter = child.offsetLeft + child.clientWidth / 2;
-      const distance = Math.abs(centerPosition - childCenter);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestIndex = index;
-      }
-    });
-
-    if (closestIndex !== currentIndex) {
-      setCurrentIndex(closestIndex);
-    }
-  };
-
-  const scrollToSlide = (index) => {
-    if (!scrollContainerRef.current) return;
-    const container = scrollContainerRef.current;
-    const children = Array.from(container.children);
-    const targetChild = children[index];
-    
-    if (targetChild) {
-      // Center the child
-      const scrollPosition = targetChild.offsetLeft - (container.clientWidth / 2) + (targetChild.clientWidth / 2);
-      container.scrollTo({
-        left: scrollPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [swiperInstance, setSwiperInstance] = useState(null);
 
   return (
-    <div className="w-full bg-[#f4f2ec] pb-8 pt-4 overflow-hidden">
-      
-      {/* Scrollable Container (Center Mode) */}
-      <div 
-        ref={scrollContainerRef}
-        onScroll={handleScroll}
-        className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 sm:px-[10vw] no-scrollbar items-center"
-      >
-        {heroImages.map((src, index) => (
-          <div 
-            key={index} 
-            className="relative flex-none w-[92vw] sm:w-[80vw] h-[60vh] sm:h-[70vh] lg:h-[80vh] min-h-[500px] rounded-[2rem] snap-center overflow-hidden shadow-md group"
-          >
-            {/* Background Image */}
-            <img 
-              src={src} 
-              alt={`Produk Unggulan ${index + 1}`} 
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-            />
-            
-            {/* Subtle gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            
-            {/* Content */}
-            <div className="absolute bottom-12 left-0 right-0 flex flex-col items-center justify-center px-4 text-center">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white uppercase tracking-widest mb-6 drop-shadow-lg">
-                PRODUK FAVORIT
-              </h1>
-              <Link 
-                to="/katalog" 
-                className="bg-white text-stone-900 text-sm font-bold uppercase tracking-widest px-10 py-4 rounded-full hover:bg-stone-200 transition-colors shadow-lg"
-              >
-                BELI SEKARANG
-              </Link>
-            </div>
-          </div>
-        ))}
+    <div className="w-full bg-[#f4f2ec] pb-8 pt-4 overflow-hidden relative">
+      {/* Slider Container */}
+      <div className="w-full">
+        <Swiper
+          modules={[Autoplay]}
+          onSwiper={setSwiperInstance}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+          spaceBetween={16}
+          slidesPerView={1.2}
+          centeredSlides={true}
+          loop={true}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          breakpoints={{
+            640: {
+              slidesPerView: 1.5,
+              spaceBetween: 24,
+            },
+            1024: {
+              slidesPerView: 1.25,
+              spaceBetween: 32,
+            }
+          }}
+          className="w-full"
+        >
+          {heroImages.map((src, index) => (
+            <SwiperSlide key={index} className="flex justify-center items-center py-4">
+              {({ isActive }) => (
+                <div 
+                  className={`relative w-full h-[60vh] sm:h-[70vh] lg:h-[80vh] min-h-[500px] rounded-[2rem] overflow-hidden shadow-md group transition-all duration-500 ease-out ${
+                    isActive ? 'scale-100 opacity-100' : 'scale-[0.97] opacity-60'
+                  }`}
+                >
+                  <img 
+                    src={src} 
+                    alt={`Produk Unggulan ${index + 1}`} 
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                  />
+                  
+                  {/* Subtle gradient overlay for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
+                  
+                  {/* Content (only fully visible on active slide) */}
+                  <div className={`absolute bottom-12 left-0 right-0 flex flex-col items-center justify-center px-4 text-center transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white uppercase tracking-widest mb-6 drop-shadow-lg">
+                      PRODUK FAVORIT
+                    </h1>
+                    <Link 
+                      to="/katalog" 
+                      className="bg-white text-stone-900 text-sm font-bold uppercase tracking-widest px-10 py-4 rounded-full hover:bg-stone-200 transition-colors shadow-lg"
+                    >
+                      BELI SEKARANG
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
 
-      {/* Slider Dots */}
-      <div className="flex justify-center items-center gap-2 mt-8">
+      {/* Custom Slider Dots */}
+      <div className="flex justify-center items-center gap-2 mt-4 relative z-10">
         {heroImages.map((_, index) => (
           <button
             key={index}
-            onClick={() => scrollToSlide(index)}
+            onClick={() => swiperInstance && swiperInstance.slideToLoop(index)}
             className={`h-2 rounded-full transition-all duration-300 ${
-              index === currentIndex ? 'w-8 bg-stone-900' : 'w-2 bg-stone-300 hover:bg-stone-400'
+              index === activeIndex ? 'w-8 bg-stone-900' : 'w-2 bg-stone-300 hover:bg-stone-400'
             }`}
-            aria-label={`Slide ${index + 1}`}
+            aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
