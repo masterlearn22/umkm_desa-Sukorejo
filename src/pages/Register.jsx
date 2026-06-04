@@ -27,28 +27,14 @@ export const Register = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate checking existing user
-      const savedUserStr = localStorage.getItem('umkm-registered-users');
-      let users = savedUserStr ? JSON.parse(savedUserStr) : [];
-      
-      if (users.find(u => u.email === formData.email)) {
-        alert('Email sudah terdaftar!');
-        setIsSubmitting(false);
-        return;
-      }
-
       // HASH THE PASSWORD
       const hashedPass = await hashPassword(formData.password);
       const secureData = { ...formData, password: hashedPass };
 
       // 1. Submit to Google Apps Script Database with Hashed Password
       await registerUser(secureData);
-
-      // 2. Save locally for session
-      users.push(secureData);
-      localStorage.setItem('umkm-registered-users', JSON.stringify(users));
       
-      // 3. Auto login (omit password from session context)
+      // 2. Auto login (omit password from session context)
       const { password, ...userSession } = secureData;
       login(userSession);
       navigate('/');

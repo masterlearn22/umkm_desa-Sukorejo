@@ -344,3 +344,28 @@ export const registerUser = async (userData) => {
     });
   }
 };
+
+export const loginUser = async (email, hashedPassword) => {
+  const payload = {
+    action: 'login',
+    email: email,
+    password: hashedPassword
+  };
+
+  try {
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      }
+    });
+    
+    if (!response.ok) throw new Error('Network response was not ok');
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.warn("Failed to login via GAS.", error);
+    throw new Error('Gagal terhubung ke server login.');
+  }
+};

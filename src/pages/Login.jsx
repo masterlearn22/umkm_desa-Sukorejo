@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { hashPassword } from '../utils/hash';
+import { loginUser } from '../services/api';
 import { LogIn } from 'lucide-react';
 
 export const Login = () => {
@@ -10,27 +11,32 @@ export const Login = () => {
   const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
-    const savedUserStr = localStorage.getItem('umkm-registered-users');
-    let users = savedUserStr ? JSON.parse(savedUserStr) : [];
-    
-    // Hash input password to compare with the hashed password in local storage
-    const hashedInputPass = await hashPassword(password);
-    
-    const foundUser = users.find(u => u.email === email && u.password === hashedInputPass);
-    
-    if (foundUser) {
-      // Omit password from saved session
-      const { password, ...userSession } = foundUser;
-      login(userSession);
-      navigate(from, { replace: true });
-    } else {
-      alert('Email atau password salah! Atau Anda belum mendaftar.');
+    try {
+      // Hash input password
+      const hashedInputPass = await hashPassword(password);
+      
+      // Request login via GAS
+      const response = await loginUser(email, hashedInputPass);
+      
+      if (response.status === 'success') {
+        login(response.user);
+        navigate(from, { replace: true });
+      } else {
+        alert(response.message || 'Email atau password salah!');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Gagal terhubung ke server login. Pastikan internet Anda lancar.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -73,9 +79,11 @@ export const Login = () => {
 
           <button
             type="submit"
-            className="w-full py-4 px-6 bg-stone-900 text-white rounded-full font-bold uppercase tracking-widest text-sm hover:bg-stone-800 transition-all flex items-center justify-center gap-2"
+            disabled={isSubmitting}
+            className="w-full py-4 px-6 bg-stone-900 text-white rounded-full font-bold uppercase tracking-widest text-sm hover:bg-stone-800 transition-all flex items-center justify-center gap-2 disabled:bg-stone-400"
           >
-            Masuk <LogIn size={18} />
+            {isSubmitting ? 'Memproses...' : 'Masuk Sekarang'}
+            {!isSubmitting && <LogIn size={18} />}
           </button>
           
           <p className="text-center text-sm text-stone-600">
