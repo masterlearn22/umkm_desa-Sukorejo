@@ -6,6 +6,7 @@ import CheckoutForm from './components/CheckoutForm';
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import ProductDetail from './pages/ProductDetail';
+import AboutUs from './pages/AboutUs';
 import Footer from './components/Footer';
 import { fetchProducts } from './services/api';
 import { useLanguage } from './context/LanguageContext';
@@ -14,18 +15,10 @@ const App = () => {
   const { lang } = useLanguage();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-
-  const categories = [
-    { id: 'All', labelKey: 'filterAll' },
-    { id: 'Fresh', labelKey: 'filterFresh' },
-    { id: 'Processed', labelKey: 'filterProcessed' },
-    { id: 'Craft', labelKey: 'filterCraft' },
-  ];
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -41,8 +34,6 @@ const App = () => {
     };
     loadProducts();
   }, []);
-
-  // Filtering logic is moved to Catalog.jsx, but we keep state here so it persists across navigation
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-50">
@@ -60,6 +51,7 @@ const App = () => {
             />
           } />
           <Route path="/produk/:id" element={<ProductDetail products={products} />} />
+          <Route path="/tentang-kami" element={<AboutUs />} />
         </Routes>
       </main>
 

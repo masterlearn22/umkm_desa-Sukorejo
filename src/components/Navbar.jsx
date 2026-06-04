@@ -46,10 +46,9 @@ const Navbar = ({ onCartClick }) => {
               <Link to="/katalog" className={`text-xs font-bold uppercase tracking-widest transition-colors ${location.pathname === '/katalog' ? 'text-stone-900 border-b-2 border-stone-900 pb-1' : 'text-stone-500 hover:text-stone-900'}`}>
                 {lang === 'en' ? 'CATALOG' : 'KATALOG'}
               </Link>
-              {/* Dummy Links to match Solidu's extensive navigation */}
-              <a href="#" className="text-xs font-bold uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors">
-                TENTANG KAMI
-              </a>
+              <Link to="/tentang-kami" className={`text-xs font-bold uppercase tracking-widest transition-colors ${location.pathname === '/tentang-kami' ? 'text-stone-900 border-b-2 border-stone-900 pb-1' : 'text-stone-500 hover:text-stone-900'}`}>
+                {lang === 'en' ? 'ABOUT US' : 'TENTANG KAMI'}
+              </Link>
               <a href="#" className="text-xs font-bold uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors">
                 HUBUNGI KAMI
               </a>
