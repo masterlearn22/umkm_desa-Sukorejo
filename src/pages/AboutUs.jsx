@@ -132,7 +132,16 @@ const AboutUs = () => {
            </div>
            
            <div className="w-full md:w-1/2 h-64 md:h-80 bg-stone-200 rounded-2xl overflow-hidden relative flex items-center justify-center">
-              <span className="text-stone-400 font-bold tracking-widest uppercase text-xs">Peta Lokasi Dummy</span>
+              <iframe 
+                src="https://maps.google.com/maps?q=Sukorejo,+Kec.+Bangorejo,+Kabupaten+Banyuwangi,+Jawa+Timur&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen="" 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Peta Lokasi Desa Sukorejo"
+              ></iframe>
            </div>
 
         </div>
