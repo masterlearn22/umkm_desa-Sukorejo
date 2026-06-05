@@ -44,7 +44,7 @@ const Hero = () => {
 
       {/* Right Slider Container */}
       <div className="w-full lg:w-7/12 lg:absolute lg:right-0 lg:top-0 lg:bottom-0 flex items-center pl-4 sm:pl-8 lg:pl-0">
-        <div className="w-full overflow-visible">
+        <div className="w-full">
           <Swiper
             modules={[Autoplay]}
             onSwiper={setSwiperInstance}
@@ -62,7 +62,7 @@ const Hero = () => {
                 spaceBetween: 32,
               },
             }}
-            className="w-full !overflow-visible"
+            className="w-full"
           >
             {heroImages.map((item, index) => (
               <SwiperSlide key={index} className="flex justify-center items-center py-8" style={{ width: 'auto' }}>
