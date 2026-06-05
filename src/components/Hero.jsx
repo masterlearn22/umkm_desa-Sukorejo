@@ -49,7 +49,7 @@ const Hero = () => {
             <SwiperSlide key={index} className="flex justify-center items-center py-4">
               {({ isActive }) => (
                 <div 
-                  className={`relative w-full h-[60vh] sm:h-[70vh] lg:h-[80vh] min-h-[500px] rounded-xl overflow-hidden shadow-md group transition-all duration-500 ease-out ${
+                  className={`relative w-full h-[40vh] sm:h-[45vh] lg:h-[50vh] min-h-[300px] rounded-xl overflow-hidden shadow-md group transition-all duration-500 ease-out ${
                     isActive ? 'scale-100 opacity-100' : 'scale-[0.98] opacity-50'
                   }`}
                 >
