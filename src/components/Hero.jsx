@@ -26,7 +26,7 @@ const Hero = () => {
           onSwiper={setSwiperInstance}
           onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           spaceBetween={4}
-          slidesPerView={1.1}
+          slidesPerView={'auto'}
           centeredSlides={true}
           loop={true}
           autoplay={{
@@ -35,22 +35,20 @@ const Hero = () => {
           }}
           breakpoints={{
             640: {
-              slidesPerView: 1.15,
-              spaceBetween: 8,
+              spaceBetween: 24,
             },
             1024: {
-              slidesPerView: 1.25,
-              spaceBetween: 10,
+              spaceBetween: 32,
             }
           }}
           className="w-full"
         >
           {heroImages.map((item, index) => (
-            <SwiperSlide key={index} className="flex justify-center items-center py-4">
+            <SwiperSlide key={index} className="flex justify-center items-center py-4" style={{ width: 'auto' }}>
               {({ isActive }) => (
                 <div 
-                  className={`relative w-full h-[40vh] sm:h-[45vh] lg:h-[50vh] min-h-[300px] rounded-xl overflow-hidden shadow-md group transition-all duration-500 ease-out ${
-                    isActive ? 'scale-100 opacity-100' : 'scale-[0.98] opacity-50'
+                  className={`relative aspect-[3/4] h-[50vh] min-h-[380px] max-h-[600px] rounded-2xl overflow-hidden shadow-xl group transition-all duration-500 ease-out ${
+                    isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-40'
                   }`}
                 >
                   <img 
