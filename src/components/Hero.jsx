@@ -18,79 +18,95 @@ const Hero = () => {
   const [swiperInstance, setSwiperInstance] = useState(null);
 
   return (
-    <div className="w-full bg-[#f4f2ec] pb-8 pt-4 overflow-hidden relative">
-      {/* Slider Container */}
-      <div className="w-full">
-        <Swiper
-          modules={[Autoplay]}
-          onSwiper={setSwiperInstance}
-          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-          spaceBetween={4}
-          slidesPerView={'auto'}
-          centeredSlides={true}
-          loop={true}
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            640: {
-              spaceBetween: 24,
-            },
-            1024: {
-              spaceBetween: 32,
-            }
-          }}
-          className="w-full"
-        >
-          {heroImages.map((item, index) => (
-            <SwiperSlide key={index} className="flex justify-center items-center py-4" style={{ width: 'auto' }}>
-              {({ isActive }) => (
-                <div 
-                  className={`relative aspect-[3/4] h-[50vh] min-h-[380px] max-h-[600px] rounded-2xl overflow-hidden shadow-xl group transition-all duration-500 ease-out ${
-                    isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-40'
-                  }`}
-                >
-                  <img 
-                    src={item.src} 
-                    alt={item.title} 
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                  />
-                  
-                  {/* Subtle gradient overlay for text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
-                  
-                  {/* Content (only fully visible on active slide) */}
-                  <div className={`absolute bottom-12 left-0 right-0 flex flex-col items-center justify-center px-4 text-center transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-black text-white uppercase tracking-widest mb-6 drop-shadow-lg">
-                      {item.title}
-                    </h1>
-                    <Link 
-                      to="/katalog" 
-                      className="bg-white text-stone-900 text-sm font-bold uppercase tracking-widest px-10 py-4 rounded-full hover:bg-stone-200 transition-colors shadow-lg"
-                    >
-                      BELI SEKARANG
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </SwiperSlide>
-          ))}
-        </Swiper>
+    <div className="w-full bg-[#f4f2ec] py-12 md:py-24 overflow-hidden relative flex flex-col lg:flex-row items-center min-h-[80vh]">
+      
+      {/* Left Text Content */}
+      <div className="w-full lg:w-5/12 px-4 sm:px-8 lg:pl-16 xl:pl-32 z-10 mb-12 lg:mb-0 flex flex-col justify-center">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-black text-stone-900 leading-[1.1] mb-6 uppercase tracking-tight">
+          Mahakarya <br/>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-400">
+            Alam Sukorejo
+          </span>
+        </h1>
+        <p className="text-base md:text-lg text-stone-600 mb-8 max-w-md leading-relaxed">
+          "Menghadirkan hasil bumi terbaik dan olahan organik premium langsung dari kebun petani lokal desa kami ke meja makan Anda."
+        </p>
+        <div className="flex gap-4 items-center">
+          <Link 
+            to="/katalog" 
+            className="bg-stone-900 text-white font-bold uppercase tracking-widest text-sm px-8 py-4 rounded-full hover:bg-stone-800 transition-colors shadow-lg flex items-center gap-3 group"
+          >
+            Jelajahi Produk
+            <span className="group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
+        </div>
       </div>
 
-      {/* Custom Slider Dots */}
-      <div className="flex justify-center items-center gap-2 mt-4 relative z-10">
-        {heroImages.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => swiperInstance && swiperInstance.slideToLoop(index)}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              index === activeIndex ? 'w-8 bg-stone-900' : 'w-2 bg-stone-300 hover:bg-stone-400'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
+      {/* Right Slider Container */}
+      <div className="w-full lg:w-7/12 lg:absolute lg:right-0 lg:top-0 lg:bottom-0 flex items-center pl-4 sm:pl-8 lg:pl-0">
+        <div className="w-full overflow-visible">
+          <Swiper
+            modules={[Autoplay]}
+            onSwiper={setSwiperInstance}
+            onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+            spaceBetween={24}
+            slidesPerView={'auto'}
+            centeredSlides={false}
+            loop={true}
+            autoplay={{
+              delay: 4000,
+              disableOnInteraction: false,
+            }}
+            breakpoints={{
+              640: {
+                spaceBetween: 32,
+              },
+            }}
+            className="w-full !overflow-visible"
+          >
+            {heroImages.map((item, index) => (
+              <SwiperSlide key={index} className="flex justify-center items-center py-8" style={{ width: 'auto' }}>
+                {({ isActive }) => (
+                  <div 
+                    className={`relative aspect-[3/4] h-[50vh] min-h-[380px] max-h-[600px] rounded-2xl overflow-hidden shadow-2xl group transition-all duration-700 ease-out ${
+                      isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-50'
+                    }`}
+                  >
+                    <img 
+                      src={item.src} 
+                      alt={item.title} 
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                    />
+                    
+                    {/* Subtle gradient overlay for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                    
+                    {/* Content (only fully visible on active slide) */}
+                    <div className={`absolute bottom-8 left-0 right-0 flex flex-col items-center justify-center px-6 text-center transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
+                      <h2 className="text-2xl md:text-3xl font-heading font-black text-white uppercase tracking-widest mb-4 drop-shadow-lg leading-tight">
+                        {item.title}
+                      </h2>
+                    </div>
+                  </div>
+                )}
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          
+          {/* Custom Slider Dots */}
+          <div className="flex justify-start items-center gap-2 mt-8 lg:ml-0 relative z-10">
+            {heroImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => swiperInstance && swiperInstance.slideToLoop(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === activeIndex ? 'w-8 bg-stone-900' : 'w-2 bg-stone-300 hover:bg-stone-400'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
