@@ -33,8 +33,8 @@ export const Login = () => {
         alert(response.message || 'Email atau password salah!');
       }
     } catch (error) {
-      console.error(error);
-      alert('Gagal terhubung ke server login. Pastikan internet Anda lancar.');
+      console.error("Login caught error:", error);
+      alert('Gagal login: ' + (error.message || 'Kesalahan jaringan. Pastikan internet Anda lancar.'));
     } finally {
       setIsSubmitting(false);
     }

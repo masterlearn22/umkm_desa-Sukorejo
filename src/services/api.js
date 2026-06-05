@@ -1,5 +1,5 @@
 // This URL should be replaced with the actual Google Apps Script Web App URL
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyVsNCTmjIknym5hg9YyXbIBpacxyBit8FUvLs-dUNAfFd-qyzDGPgpptsu75sQpJaZAg/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyWr1hct7DW0SsCbi3e2V3pnlrcfXngg2rTX-NzP7V-0mWdYVdAx8fuqf01hhSawNS6GA/exec';
 
 // Since we might not have GAS deployed yet, we use mock data if fetch fails
 const mockProducts = [
@@ -366,6 +366,6 @@ export const loginUser = async (email, hashedPassword) => {
     return result;
   } catch (error) {
     console.warn("Failed to login via GAS.", error);
-    throw new Error('Gagal terhubung ke server login.');
+    throw error;
   }
 };

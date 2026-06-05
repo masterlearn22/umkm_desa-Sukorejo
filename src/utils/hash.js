@@ -6,13 +6,24 @@
  * @returns {Promise<string>} - Password yang sudah di-hash (hex string)
  */
 export const hashPassword = async (password) => {
-  const msgBuffer = new TextEncoder().encode(password);
-  // Hash the password using SHA-256
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  
-  // Convert the ArrayBuffer to a hex string
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  
-  return hashHex;
+  try {
+    if (window.crypto && window.crypto.subtle) {
+      const msgBuffer = new TextEncoder().encode(password);
+      const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } else {
+      // Fallback untuk testing di HP via IP lokal (HTTP non-secure)
+      let hash = 0;
+      for (let i = 0; i < password.length; i++) {
+        const char = password.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return 'fallback_' + Math.abs(hash).toString(16);
+    }
+  } catch (error) {
+    console.error("Hash error:", error);
+    return password; // Fallback darurat
+  }
 };
