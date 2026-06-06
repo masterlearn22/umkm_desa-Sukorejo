@@ -9,7 +9,11 @@ import AboutUs from './pages/AboutUs';
 import Payment from './pages/Payment';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
-import { Profile } from './pages/Profile';
+import ProfileLayout from './pages/profile/ProfileLayout';
+import ProfileSettings from './pages/profile/ProfileSettings';
+import AddressSettings from './pages/profile/AddressSettings';
+import ChangePassword from './pages/profile/ChangePassword';
+import MyOrders from './pages/profile/MyOrders';
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import ManageProducts from './pages/dashboard/ManageProducts';
 import ManageOrders from './pages/dashboard/ManageOrders';
@@ -69,9 +73,15 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={
               <ProtectedRoute>
-                <Profile />
+                <ProfileLayout />
               </ProtectedRoute>
-            } />
+            }>
+              <Route index element={<ProfileSettings />} />
+              <Route path="account" element={<ProfileSettings />} />
+              <Route path="address" element={<AddressSettings />} />
+              <Route path="password" element={<ChangePassword />} />
+              <Route path="orders" element={<MyOrders />} />
+            </Route>
 
             {/* Dashboard Routes */}
             <Route path="/dashboard" element={
