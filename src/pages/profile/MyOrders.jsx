@@ -47,9 +47,9 @@ const MyOrders = () => {
   // Filter orders by tab and search query
   const filteredOrders = orders.filter(order => {
     const matchTab = activeTab === 'all' || order.Status_Pesanan === activeTab || (activeTab === 'Pengembalian' && order.Status_Pesanan === 'Pengembalian');
-    const matchSearch = order.Nama_Pelanggan?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                        order.Order_ID?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        order.Detail_Produk?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchSearch = String(order.Nama_Pelanggan || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+                        String(order.Order_ID || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        String(order.Detail_Produk || '').toLowerCase().includes(searchQuery.toLowerCase());
     return matchTab && matchSearch;
   });
 
@@ -131,7 +131,7 @@ const MyOrders = () => {
                   <div className="flex justify-between items-start">
                     <h3 className="text-stone-800 text-sm">{order.Detail_Produk || 'Produk Pesanan'}</h3>
                     <div className="text-right ml-4">
-                      <p className="text-sm text-[#ee4d2d]">Rp{order.Total_Harga?.toLocaleString('id-ID') || 0}</p>
+                      <p className="text-sm text-[#ee4d2d]">Rp{Number(order.Total_Harga || 0).toLocaleString('id-ID')}</p>
                     </div>
                   </div>
                   <p className="text-stone-500 text-xs mt-1">Variasi: -</p>
@@ -143,7 +143,7 @@ const MyOrders = () => {
               <div className="px-6 py-4 border-t border-stone-100 bg-[#fffefb]">
                 <div className="flex justify-end items-center mb-4">
                   <span className="text-sm text-stone-800 mr-2">Total Pesanan:</span>
-                  <span className="text-2xl font-medium text-[#ee4d2d]">Rp{order.Total_Harga?.toLocaleString('id-ID') || 0}</span>
+                  <span className="text-2xl font-medium text-[#ee4d2d]">Rp{Number(order.Total_Harga || 0).toLocaleString('id-ID')}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="text-xs text-stone-500">

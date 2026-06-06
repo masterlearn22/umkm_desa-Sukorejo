@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LayoutDashboard, Package, ShoppingBag, Users } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, Users, Store } from 'lucide-react';
 
 const DashboardLayout = () => {
   const { user } = useAuth();
@@ -24,6 +24,12 @@ const DashboardLayout = () => {
       name: 'Pengguna', 
       path: '/dashboard/users', 
       icon: <Users size={20} />, 
+      show: user?.permissions?.ManageUsers 
+    },
+    { 
+      name: 'Pengajuan Penjual', 
+      path: '/dashboard/applications', 
+      icon: <Store size={20} />, 
       show: user?.permissions?.ManageUsers 
     }
   ];

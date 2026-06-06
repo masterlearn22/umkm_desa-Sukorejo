@@ -14,10 +14,12 @@ import ProfileSettings from './pages/profile/ProfileSettings';
 import AddressSettings from './pages/profile/AddressSettings';
 import ChangePassword from './pages/profile/ChangePassword';
 import MyOrders from './pages/profile/MyOrders';
+import ApplySeller from './pages/profile/ApplySeller';
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import ManageProducts from './pages/dashboard/ManageProducts';
 import ManageOrders from './pages/dashboard/ManageOrders';
 import ManageUsers from './pages/dashboard/ManageUsers';
+import ManageApplications from './pages/dashboard/ManageApplications';
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
 import { fetchProducts } from './services/api';
@@ -81,6 +83,7 @@ const App = () => {
               <Route path="address" element={<AddressSettings />} />
               <Route path="password" element={<ChangePassword />} />
               <Route path="orders" element={<MyOrders />} />
+              <Route path="apply-seller" element={<ApplySeller />} />
             </Route>
 
             {/* Dashboard Routes */}
@@ -103,6 +106,11 @@ const App = () => {
               <Route path="users" element={
                 <ProtectedRoute requiredPermission="ManageUsers">
                   <ManageUsers />
+                </ProtectedRoute>
+              } />
+              <Route path="applications" element={
+                <ProtectedRoute requiredPermission="ManageUsers">
+                  <ManageApplications />
                 </ProtectedRoute>
               } />
             </Route>

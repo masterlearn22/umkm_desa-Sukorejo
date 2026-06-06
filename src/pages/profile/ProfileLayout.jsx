@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { User, MapPin, Lock, ShoppingBag, LogOut } from 'lucide-react';
+import { User, MapPin, Lock, ShoppingBag, LogOut, Store } from 'lucide-react';
 
 const ProfileLayout = () => {
   const { user, logout } = useAuth();
@@ -71,6 +71,18 @@ const ProfileLayout = () => {
                 Pesanan Saya
               </NavLink>
             </div>
+
+            {user.role === 'user' && (
+              <div className="pt-2 mt-2 border-t border-stone-200">
+                <NavLink 
+                  to="/profile/apply-seller" 
+                  className={({isActive}) => `flex items-center gap-3 px-3 py-2 text-sm font-bold transition-colors ${isActive ? 'text-[#ee4d2d]' : 'text-stone-800 hover:text-[#ee4d2d]'}`}
+                >
+                  <Store size={18} className="text-orange-500" />
+                  Mulai Berjualan
+                </NavLink>
+              </div>
+            )}
           </nav>
 
           <button 

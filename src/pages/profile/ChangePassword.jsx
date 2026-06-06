@@ -1,25 +1,41 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { changePassword } from '../../services/api';
 
 const ChangePassword = () => {
+  const { user } = useAuth();
   const [passwords, setPasswords] = useState({
     oldPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setPasswords(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (passwords.newPassword !== passwords.confirmPassword) {
       alert('Password baru dan konfirmasi tidak cocok!');
       return;
     }
-    // Simulate API call
-    alert('Fungsi ubah password belum diimplementasikan di backend, tapi UI siap!');
-    setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
+    
+    setLoading(true);
+    try {
+      const res = await changePassword(user.email, passwords.oldPassword, passwords.newPassword);
+      if (res.status === 'success') {
+        alert('Password berhasil diubah!');
+        setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
+      } else {
+        alert(res.message || 'Gagal mengubah password');
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan koneksi.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,8 +91,8 @@ const ChangePassword = () => {
         <div className="flex items-center pt-4">
           <div className="w-1/3"></div>
           <div className="w-2/3">
-            <button type="submit" className="bg-[#ee4d2d] hover:bg-[#d73f22] text-white px-6 py-2 rounded shadow-sm text-sm font-medium transition-colors">
-              Konfirmasi
+            <button type="submit" disabled={loading} className="bg-[#ee4d2d] hover:bg-[#d73f22] disabled:opacity-50 text-white px-6 py-2 rounded shadow-sm text-sm font-medium transition-colors">
+              {loading ? 'Memproses...' : 'Konfirmasi'}
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { User } from 'lucide-react';
+import { updateProfileData } from '../../services/api';
 
 const ProfileSettings = () => {
   const { user, updateProfile } = useAuth();
@@ -10,10 +11,11 @@ const ProfileSettings = () => {
     name: '',
     email: '',
     phone: '',
-    shopName: '',
     gender: 'Laki-laki',
     dob: ''
   });
+  
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -22,9 +24,8 @@ const ProfileSettings = () => {
         name: user.name || '',
         email: user.email || '',
         phone: user.phone || '',
-        shopName: user.role === 'penjual' ? (user.name + ' Store') : '',
-        gender: 'Laki-laki', // Dummy default
-        dob: '2004-01-01' // Dummy default
+        gender: user.gender || 'Laki-laki',
+        dob: user.dob || ''
       });
     }
   }, [user]);
@@ -33,14 +34,34 @@ const ProfileSettings = () => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    // We only update name and phone to AuthContext since that's what it supports
-    updateProfile({
-      name: formData.name,
-      phone: formData.phone
-    });
-    alert('Profil berhasil diperbarui!');
+    setLoading(true);
+    try {
+      const response = await updateProfileData({
+        email: formData.email,
+        name: formData.name,
+        phone: formData.phone,
+        gender: formData.gender,
+        dob: formData.dob
+      });
+      
+      if (response.status === 'success') {
+        updateProfile({
+          name: formData.name,
+          phone: formData.phone,
+          gender: formData.gender,
+          dob: formData.dob
+        });
+        alert('Profil berhasil diperbarui!');
+      } else {
+        alert(response.message || 'Gagal memperbarui profil.');
+      }
+    } catch (error) {
+      alert('Terjadi kesalahan koneksi.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -78,27 +99,19 @@ const ProfileSettings = () => {
               <label className="w-1/3 text-right pr-4 text-sm text-stone-500">Email</label>
               <div className="w-2/3 text-sm">
                 <span className="text-stone-800">{formData.email.replace(/(.{2})(.*)(?=@)/, (gp1, gp2, gp3) => gp2 + '*'.repeat(gp3.length))}</span>
-                <button type="button" className="ml-2 text-blue-600 hover:underline">Ubah</button>
               </div>
             </div>
 
             <div className="flex items-center">
               <label className="w-1/3 text-right pr-4 text-sm text-stone-500">Nomor Telepon</label>
               <div className="w-2/3 text-sm">
-                <span className="text-stone-800">{formData.phone ? formData.phone.replace(/.(?=.{2})/g, '*') : '-'}</span>
-                <button type="button" className="ml-2 text-blue-600 hover:underline">Ubah</button>
-              </div>
-            </div>
-
-            <div className="flex items-center">
-              <label className="w-1/3 text-right pr-4 text-sm text-stone-500">Nama Toko</label>
-              <div className="w-2/3">
                 <input 
                   type="text" 
-                  name="shopName"
-                  value={formData.shopName}
+                  name="phone"
+                  value={formData.phone}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-stone-300 rounded focus:outline-none focus:border-stone-500 text-sm"
+                  placeholder="Contoh: 08123456789"
                 />
               </div>
             </div>
@@ -131,20 +144,14 @@ const ProfileSettings = () => {
                   onChange={handleChange}
                   className="px-3 py-1.5 border border-stone-300 rounded focus:outline-none focus:border-stone-500"
                 />
-                <span className="text-green-600 text-xs flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  Terverifikasi
-                </span>
               </div>
             </div>
 
             <div className="flex items-center pt-4">
               <div className="w-1/3"></div>
               <div className="w-2/3">
-                <button type="submit" className="bg-[#ee4d2d] hover:bg-[#d73f22] text-white px-6 py-2 rounded shadow-sm text-sm font-medium transition-colors">
-                  Simpan
+                <button type="submit" disabled={loading} className="bg-[#ee4d2d] hover:bg-[#d73f22] disabled:opacity-50 text-white px-6 py-2 rounded shadow-sm text-sm font-medium transition-colors">
+                  {loading ? 'Menyimpan...' : 'Simpan'}
                 </button>
               </div>
             </div>

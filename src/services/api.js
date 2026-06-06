@@ -418,24 +418,93 @@ export const fetchUsers = async () => {
 
 export const updateUserRole = async (email, newRole) => {
   try {
-    const payload = {
-      action: 'update_role',
-      email: email,
-      new_role: newRole
-    };
-    
+    const payload = { action: 'update_role', email, new_role: newRole };
     const response = await fetch(GAS_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain;charset=utf-8',
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
-    
     return await response.json();
   } catch (error) {
-    console.warn("Failed to update role in GAS.", error);
-    return { status: "error", message: error.message };
+    console.error("Error updating user role:", error);
+    throw error;
+  }
+};
+
+export const updateProfileData = async (data) => {
+  try {
+    const payload = { action: 'update_profile', ...data };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw error;
+  }
+};
+
+export const changePassword = async (email, oldPassword, newPassword) => {
+  try {
+    const payload = { action: 'change_password', email, oldPassword, newPassword };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error changing password:", error);
+    throw error;
+  }
+};
+
+export const submitSellerApplication = async (data) => {
+  try {
+    const payload = { action: 'submit_application', ...data };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error submitting application:", error);
+    throw error;
+  }
+};
+
+export const fetchApplications = async () => {
+  try {
+    const payload = { action: 'get_applications' };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching applications:", error);
+    return [];
+  }
+};
+
+export const approveApplication = async (idPengajuan, newStatus) => {
+  try {
+    const payload = { action: 'approve_application', idPengajuan, newStatus };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error approving application:", error);
+    throw error;
   }
 };
 
