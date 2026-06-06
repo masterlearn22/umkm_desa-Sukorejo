@@ -11,6 +11,8 @@ const Navbar = ({ onCartClick }) => {
   const { user } = useAuth();
   const location = useLocation();
   
+  console.log("Navbar rendering, user data:", user);
+
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (

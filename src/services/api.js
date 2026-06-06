@@ -415,3 +415,25 @@ export const fetchUsers = async () => {
     return [];
   }
 };
+
+export const addProduct = async (productData) => {
+  try {
+    const payload = {
+      action: 'add_product',
+      ...productData
+    };
+    
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    return await response.json();
+  } catch (error) {
+    console.warn("Failed to add product to GAS.", error);
+    return { status: "error", message: error.message };
+  }
+};
