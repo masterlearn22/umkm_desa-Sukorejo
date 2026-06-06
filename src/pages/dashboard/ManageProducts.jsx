@@ -28,7 +28,7 @@ const ManageProducts = () => {
       setProducts(data);
     } else {
       // Penjual only sees their own products
-      const filtered = data.filter(p => p.ID_Penjual === user?.id_pengguna);
+      const filtered = data.filter(p => p.ID_Pengguna === user?.id_pengguna);
       setProducts(filtered);
     }
     setLoading(false);
@@ -48,7 +48,7 @@ const ManageProducts = () => {
     
     const payload = {
       ...formData,
-      id_penjual: user?.id_pengguna || ''
+      id_pengguna: user?.id_pengguna || ''
     };
 
     const res = await addProduct(payload);
@@ -86,7 +86,7 @@ const ManageProducts = () => {
                 <th className="p-3 font-bold">Kategori</th>
                 <th className="p-3 font-bold">Harga</th>
                 <th className="p-3 font-bold">Stok</th>
-                {user?.role === 'admin' && <th className="p-3 font-bold">ID Penjual</th>}
+                {user?.role === 'admin' && <th className="p-3 font-bold">ID Pengguna</th>}
                 <th className="p-3 font-bold">Aksi</th>
               </tr>
             </thead>
@@ -97,7 +97,7 @@ const ManageProducts = () => {
                   <td className="p-3 text-stone-600">{p.Kategori || '-'}</td>
                   <td className="p-3 text-stone-600">Rp {p.Harga || p.Harga_Rp || '0'}</td>
                   <td className="p-3 text-stone-600">{p.Stok || '0'}</td>
-                  {user?.role === 'admin' && <td className="p-3 text-stone-600 text-xs font-mono">{p.ID_Penjual || '-'}</td>}
+                  {user?.role === 'admin' && <td className="p-3 text-stone-600 text-xs font-mono">{p.ID_Pengguna || '-'}</td>}
                   <td className="p-3">
                     <button className="text-blue-600 hover:underline mr-3 text-sm">Edit</button>
                     <button className="text-red-600 hover:underline text-sm">Hapus</button>
