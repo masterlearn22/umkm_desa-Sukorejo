@@ -21,10 +21,13 @@ const ChangePassword = () => {
       alert('Password baru dan konfirmasi tidak cocok!');
       return;
     }
-    
     setLoading(true);
     try {
-      const res = await changePassword(user.email, passwords.oldPassword, passwords.newPassword);
+      const { hashPassword } = await import('../../utils/hash');
+      const hashedOld = await hashPassword(passwords.oldPassword);
+      const hashedNew = await hashPassword(passwords.newPassword);
+      
+      const res = await changePassword(user.email, hashedOld, hashedNew);
       if (res.status === 'success') {
         alert('Password berhasil diubah!');
         setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });

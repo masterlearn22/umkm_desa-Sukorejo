@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { submitOrder } from '../services/api';
 import { generateWhatsAppLink } from '../utils/whatsapp';
-import { Send, ArrowLeft, Truck, CreditCard, MapPin } from 'lucide-react';
+import { Send, ArrowLeft, Truck, CreditCard, MapPin, AlertTriangle } from 'lucide-react';
 
 const Payment = () => {
   const { t, lang } = useLanguage();
@@ -137,6 +137,23 @@ const Payment = () => {
                 <p className="text-sm text-stone-600 mt-2">{user.address || 'Alamat belum diisi. Mohon lengkapi profil Anda.'}</p>
               </div>
             </div>
+
+            {/* Address Warning Banner */}
+            {!user.address && (
+              <div className="bg-red-50 border border-red-200 rounded-3xl p-6 flex flex-col items-center text-center">
+                <AlertTriangle size={32} className="text-red-500 mb-3" />
+                <h3 className="text-lg font-bold font-heading text-red-900 uppercase tracking-widest mb-2">Alamat Belum Diisi</h3>
+                <p className="text-red-700 text-sm mb-4 max-w-md">
+                  Anda harus mengisi alamat pengiriman di profil Anda sebelum dapat melanjutkan pembayaran.
+                </p>
+                <Link 
+                  to="/profile" 
+                  className="bg-red-600 text-white px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-red-700 transition-colors"
+                >
+                  Isi Alamat Sekarang
+                </Link>
+              </div>
+            )}
 
             <form id="checkout-form" onSubmit={handleSubmit} className="space-y-8">
               

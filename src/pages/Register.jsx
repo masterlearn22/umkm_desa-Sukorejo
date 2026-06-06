@@ -14,8 +14,7 @@ export const Register = () => {
     name: '',
     phone: '',
     email: '',
-    password: '',
-    address: ''
+    password: ''
   });
 
   const handleChange = (e) => {
@@ -29,7 +28,7 @@ export const Register = () => {
     try {
       // HASH THE PASSWORD
       const hashedPass = await hashPassword(formData.password);
-      const secureData = { ...formData, password: hashedPass };
+      const secureData = { ...formData, address: '', password: hashedPass };
 
       // 1. Submit to Google Apps Script Database with Hashed Password
       await registerUser(secureData);
@@ -107,18 +106,7 @@ export const Register = () => {
             </div>
           </div>
           
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-stone-700 mb-2">Alamat Pengiriman Default</label>
-            <textarea
-              name="address"
-              required
-              rows="3"
-              value={formData.address}
-              onChange={handleChange}
-              placeholder="Jl. Raya Sukorejo No. 1..."
-              className="w-full px-5 py-4 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-stone-900 focus:border-transparent outline-none transition-all focus:bg-white text-stone-900 resize-none"
-            ></textarea>
-          </div>
+
 
           <button
             type="submit"

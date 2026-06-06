@@ -25,6 +25,7 @@ import Footer from './components/Footer';
 import { fetchProducts } from './services/api';
 import { useLanguage } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
+import AIChatbot from './components/AIChatbot';
 
 const App = () => {
   const { lang } = useLanguage();
@@ -124,6 +125,8 @@ const App = () => {
           isOpen={isCartOpen} 
           onClose={() => setIsCartOpen(false)} 
         />
+        
+        {!isDashboard && <AIChatbot products={products} />}
       </div>
     </AuthProvider>
   );

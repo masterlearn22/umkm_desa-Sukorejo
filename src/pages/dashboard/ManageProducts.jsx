@@ -28,7 +28,8 @@ const ManageProducts = () => {
       setProducts(data);
     } else {
       // Penjual only sees their own products
-      const filtered = data.filter(p => p.ID_Pengguna === user?.id_pengguna);
+      const userId = user?.id_pengguna || user?.email;
+      const filtered = data.filter(p => p.ID_Pengguna && p.ID_Pengguna === userId);
       setProducts(filtered);
     }
     setLoading(false);
@@ -85,7 +86,8 @@ const ManageProducts = () => {
                 <th className="p-3 font-bold">Nama Produk</th>
                 <th className="p-3 font-bold">Kategori</th>
                 <th className="p-3 font-bold">Harga</th>
-                <th className="p-3 font-bold">Stok</th>
+                <th className="p-3 font-bold">Stok / Berat (g)</th>
+                <th className="p-3 font-bold">Status</th>
                 {user?.role === 'admin' && <th className="p-3 font-bold">ID Pengguna</th>}
                 <th className="p-3 font-bold">Aksi</th>
               </tr>
@@ -96,7 +98,12 @@ const ManageProducts = () => {
                   <td className="p-3 font-medium text-stone-900">{p.Nama || p.Nama_Indo || '-'}</td>
                   <td className="p-3 text-stone-600">{p.Kategori || '-'}</td>
                   <td className="p-3 text-stone-600">Rp {p.Harga || p.Harga_Rp || '0'}</td>
-                  <td className="p-3 text-stone-600">{p.Stok || '0'}</td>
+                  <td className="p-3 text-stone-600">{p.Stok || p.Berat_Gram || '0'}</td>
+                  <td className="p-3 text-stone-600">
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${p.Status === 'Ready' ? 'bg-green-100 text-green-700' : 'bg-stone-100 text-stone-700'}`}>
+                      {p.Status || '-'}
+                    </span>
+                  </td>
                   {user?.role === 'admin' && <td className="p-3 text-stone-600 text-xs font-mono">{p.ID_Pengguna || '-'}</td>}
                   <td className="p-3">
                     <button className="text-blue-600 hover:underline mr-3 text-sm">Edit</button>
@@ -106,7 +113,7 @@ const ManageProducts = () => {
               ))}
               {products.length === 0 && (
                 <tr>
-                  <td colSpan={user?.role === 'admin' ? 6 : 5} className="p-4 text-center text-stone-500">Belum ada produk</td>
+                  <td colSpan={user?.role === 'admin' ? 7 : 6} className="p-4 text-center text-stone-500">Belum ada produk</td>
                 </tr>
               )}
             </tbody>
