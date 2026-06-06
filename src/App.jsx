@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CartSidebar from './components/CartSidebar';
 import Home from './pages/Home';
@@ -27,6 +27,9 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   
   const [isCartOpen, setIsCartOpen] = useState(false);
+  
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/dashboard');
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -97,7 +100,7 @@ const App = () => {
           </Routes>
         </main>
 
-        <Footer />
+        {!isDashboard && <Footer />}
 
         <CartSidebar 
           isOpen={isCartOpen} 
