@@ -27,7 +27,8 @@ export const Login = () => {
       const response = await loginUser(email, hashedInputPass);
       
       if (response.status === 'success') {
-        login(response.user);
+        login(response.user, response.permissions);
+        alert('Berhasil login!');
         navigate(from, { replace: true });
       } else {
         alert(response.message || 'Email atau password salah!');

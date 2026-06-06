@@ -345,27 +345,73 @@ export const registerUser = async (userData) => {
   }
 };
 
-export const loginUser = async (email, hashedPassword) => {
-  const payload = {
-    action: 'login',
-    email: email,
-    password: hashedPassword
-  };
-
+export const loginUser = async (email, password) => {
   try {
+    const payload = {
+      action: 'login',
+      email: email,
+      password: password
+    };
+    
     const response = await fetch(GAS_URL, {
       method: 'POST',
-      body: JSON.stringify(payload),
       headers: {
         'Content-Type': 'text/plain;charset=utf-8',
-      }
+      },
+      body: JSON.stringify(payload)
     });
     
-    if (!response.ok) throw new Error('Network response was not ok');
     const result = await response.json();
+    if (result.status === 'error') {
+      throw new Error(result.message || 'Login gagal.');
+    }
+    
+    // Result contains: status, user (name, email, role, etc), permissions (ManageProducts, etc)
     return result;
   } catch (error) {
     console.warn("Failed to login via GAS.", error);
     throw error;
+  }
+};
+
+/**
+ * Fetch all orders from GAS (for Admin/Seller)
+ */
+export const fetchOrders = async () => {
+  try {
+    const payload = { action: 'get_orders' };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    return await response.json();
+  } catch (error) {
+    console.warn("Failed to fetch orders from GAS.", error);
+    return [];
+  }
+};
+
+/**
+ * Fetch all users from GAS (for Admin)
+ */
+export const fetchUsers = async () => {
+  try {
+    const payload = { action: 'get_users' };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    return await response.json();
+  } catch (error) {
+    console.warn("Failed to fetch users from GAS.", error);
+    return [];
   }
 };

@@ -3,10 +3,12 @@ import { ShoppingCart, Globe, Search, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = ({ onCartClick }) => {
   const { lang, toggleLanguage } = useLanguage();
   const { cartItems } = useCart();
+  const { user } = useAuth();
   const location = useLocation();
   
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -49,9 +51,11 @@ const Navbar = ({ onCartClick }) => {
               <Link to="/tentang-kami" className={`text-xs font-bold uppercase tracking-widest transition-colors ${location.pathname === '/tentang-kami' ? 'text-stone-900 border-b-2 border-stone-900 pb-1' : 'text-stone-500 hover:text-stone-900'}`}>
                 {lang === 'en' ? 'ABOUT US' : 'TENTANG KAMI'}
               </Link>
-              <a href="#" className="text-xs font-bold uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors">
-                HUBUNGI KAMI
-              </a>
+              {(user?.permissions?.ManageProducts || user?.permissions?.ManageOrders || user?.permissions?.ManageUsers) && (
+                <Link to="/dashboard" className={`text-xs font-bold uppercase tracking-widest transition-colors text-red-600 hover:text-red-800`}>
+                  DASHBOARD
+                </Link>
+              )}
             </div>
 
             {/* Right: Icons */}

@@ -16,9 +16,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  const login = (userData) => {
-    // Merge with any existing user data just in case, or overwrite
-    setUser(userData);
+  const login = (userData, permissions) => {
+    // Merge user data and permissions into one object, or store them as properties
+    const userToStore = {
+      ...userData,
+      permissions: permissions || { ManageProducts: false, ManageOrders: false, ManageUsers: false }
+    };
+    setUser(userToStore);
   };
 
   const logout = () => {
