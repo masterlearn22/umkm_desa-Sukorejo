@@ -416,6 +416,29 @@ export const fetchUsers = async () => {
   }
 };
 
+export const updateUserRole = async (email, newRole) => {
+  try {
+    const payload = {
+      action: 'update_role',
+      email: email,
+      new_role: newRole
+    };
+    
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    return await response.json();
+  } catch (error) {
+    console.warn("Failed to update role in GAS.", error);
+    return { status: "error", message: error.message };
+  }
+};
+
 export const addProduct = async (productData) => {
   try {
     const payload = {

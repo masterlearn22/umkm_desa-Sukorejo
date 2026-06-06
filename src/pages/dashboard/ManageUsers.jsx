@@ -1,19 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { fetchUsers } from '../../services/api';
+import { fetchUsers, updateUserRole } from '../../services/api';
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updatingEmail, setUpdatingEmail] = useState(null);
+
+  const loadData = async () => {
+    setLoading(true);
+    const data = await fetchUsers();
+    setUsers(data);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const loadData = async () => {
-      const data = await fetchUsers();
-      // Remove header row if it leaked from GAS, though we handled it in script
-      setUsers(data);
-      setLoading(false);
-    };
     loadData();
   }, []);
+
+  const handleRoleChange = async (email, newRole) => {
+    setUpdatingEmail(email);
+    const res = await updateUserRole(email, newRole);
+    if (res && res.status === 'success') {
+      await loadData();
+    } else {
+      alert("Gagal mengubah role: " + (res?.message || "Terjadi kesalahan"));
+    }
+    setUpdatingEmail(null);
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-6">
@@ -32,8 +45,8 @@ const ManageUsers = () => {
                 <th className="p-3 font-bold">Nama Lengkap</th>
                 <th className="p-3 font-bold">Email</th>
                 <th className="p-3 font-bold">Nomor WA</th>
-                <th className="p-3 font-bold">Role</th>
-                <th className="p-3 font-bold">Aksi</th>
+                <th className="p-3 font-bold">Role Saat Ini</th>
+                <th className="p-3 font-bold">Aksi Ubah Role</th>
               </tr>
             </thead>
             <tbody>
@@ -53,7 +66,17 @@ const ManageUsers = () => {
                     </span>
                   </td>
                   <td className="p-3">
-                    <button className="text-blue-600 hover:underline text-sm">Ubah Role</button>
+                    <select 
+                      value={u.Role || 'user'}
+                      onChange={(e) => handleRoleChange(u.Email, e.target.value)}
+                      disabled={updatingEmail === u.Email}
+                      className="text-xs px-2 py-1 border border-stone-300 rounded focus:outline-none focus:border-stone-900 cursor-pointer disabled:opacity-50"
+                    >
+                      <option value="user">User</option>
+                      <option value="penjual">Penjual</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                    {updatingEmail === u.Email && <span className="ml-2 text-xs text-stone-500">Menyimpan...</span>}
                   </td>
                 </tr>
               ))}
