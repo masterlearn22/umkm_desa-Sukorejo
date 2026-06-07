@@ -3,7 +3,8 @@ import { MessageCircle, X, Send, Bot, User, Loader2, Mic, Square } from 'lucide-
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Ambil API Key dari .env (contoh: VITE_GEMINI_API_KEY)
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+const rawKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+const API_KEY = rawKey.startsWith('AQ') || rawKey.startsWith('AI') ? rawKey : (rawKey ? atob(rawKey) : '');
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const AIChatbot = ({ products }) => {
