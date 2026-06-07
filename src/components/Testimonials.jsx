@@ -27,7 +27,7 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <div className="w-full bg-[#f4f2ec] py-24 px-4 sm:px-6 lg:px-8">
+    <div className="w-full bg-[#f4f2ec] py-12 lg:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-screen-2xl mx-auto">
         
         {/* Header */}

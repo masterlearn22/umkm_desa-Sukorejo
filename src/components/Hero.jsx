@@ -18,10 +18,10 @@ const Hero = () => {
   const [swiperInstance, setSwiperInstance] = useState(null);
 
   return (
-    <div className="w-full bg-[#f4f2ec] py-10 lg:py-24 overflow-hidden relative flex flex-col lg:flex-row items-center lg:min-h-[80vh]">
+    <div className="w-full bg-[#f4f2ec] py-6 lg:py-24 overflow-hidden relative flex flex-col lg:flex-row items-center lg:min-h-[80vh]">
       
       {/* Left Text Content */}
-      <div className="w-full lg:w-5/12 px-4 sm:px-8 lg:pl-16 xl:pl-32 z-10 mb-12 lg:mb-0 flex flex-col justify-center">
+      <div className="w-full lg:w-5/12 px-4 sm:px-8 lg:pl-16 xl:pl-32 z-10 mb-8 lg:mb-0 flex flex-col justify-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-black text-stone-900 leading-[1.1] mb-6 uppercase tracking-tight">
           Mahakarya <br/>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-400">
@@ -68,7 +68,7 @@ const Hero = () => {
               <SwiperSlide key={index} className="flex justify-center items-center py-8" style={{ width: 'auto' }}>
                 {({ isActive }) => (
                   <div 
-                    className={`relative aspect-[3/4] h-[50vh] min-h-[380px] max-h-[600px] rounded-2xl overflow-hidden shadow-2xl group transition-all duration-700 ease-out ${
+                    className={`relative aspect-[3/4] h-[350px] sm:h-[400px] lg:h-[50vh] lg:min-h-[380px] max-h-[600px] rounded-2xl overflow-hidden shadow-2xl group transition-all duration-700 ease-out ${
                       isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-50'
                     }`}
                   >

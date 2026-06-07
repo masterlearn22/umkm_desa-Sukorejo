@@ -36,9 +36,9 @@ const values = [
 
 const ValuesGrid = () => {
   return (
-    <div className="w-full bg-[#f4f2ec] py-20 px-4 sm:px-6 lg:px-8">
+    <div className="w-full bg-[#f4f2ec] py-12 lg:py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-screen-xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16 text-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10 lg:gap-y-16 text-center">
           {values.map((val, idx) => (
             <div key={idx} className="flex flex-col items-center">
               <div className="text-stone-800 mb-6">

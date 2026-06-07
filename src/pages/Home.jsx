@@ -14,7 +14,7 @@ const Home = ({ products, loading }) => {
       <Hero />
       
       {/* Product List Section */}
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
         <div className="flex flex-col md:flex-row justify-between items-baseline mb-10 border-b border-stone-200 pb-4">
           <div className="flex flex-wrap items-baseline gap-6">
             <h2 className="text-2xl md:text-3xl font-heading font-black text-stone-900 uppercase tracking-widest">
@@ -41,8 +41,8 @@ const Home = ({ products, loading }) => {
       </div>
 
       {/* Trust Banner */}
-      <div className="w-full bg-white border-y border-stone-200 py-8 mb-16">
-        <div className="max-w-screen-2xl mx-auto flex flex-wrap justify-center items-center gap-8 md:gap-16 text-center px-4">
+      <div className="w-full bg-white border-y border-stone-200 py-6 mb-8 lg:py-8 lg:mb-16">
+        <div className="max-w-screen-2xl mx-auto flex flex-wrap justify-center items-center gap-6 md:gap-16 text-center px-4">
           <div className="flex items-center gap-3">
             <span className="text-3xl">🍃</span>
             <span className="font-heading font-black text-xl md:text-2xl lg:text-3xl uppercase tracking-widest text-stone-900">Tanpa Pestisida</span>
