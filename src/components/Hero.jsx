@@ -18,7 +18,7 @@ const Hero = () => {
   const [swiperInstance, setSwiperInstance] = useState(null);
 
   return (
-    <div className="w-full bg-[#f4f2ec] py-12 md:py-24 overflow-hidden relative flex flex-col lg:flex-row items-center min-h-[80vh]">
+    <div className="w-full bg-[#f4f2ec] py-10 lg:py-24 overflow-hidden relative flex flex-col lg:flex-row items-center lg:min-h-[80vh]">
       
       {/* Left Text Content */}
       <div className="w-full lg:w-5/12 px-4 sm:px-8 lg:pl-16 xl:pl-32 z-10 mb-12 lg:mb-0 flex flex-col justify-center">
