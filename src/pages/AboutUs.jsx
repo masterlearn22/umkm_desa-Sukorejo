@@ -27,11 +27,15 @@ const AboutUs = () => {
         <div className="flex flex-col lg:flex-row gap-16 items-center">
           
           <div className="w-full lg:w-1/2">
-            <div className="bg-stone-100 rounded-3xl aspect-[4/3] w-full overflow-hidden flex items-center justify-center relative">
-               {/* Decorative placeholder for farm image */}
-               <div className="absolute inset-0 bg-stone-200"></div>
-               <Leaf size={64} className="text-stone-300 relative z-10" />
-               <span className="absolute bottom-6 left-6 text-xs font-bold text-stone-400 uppercase tracking-widest">
+            <div className="bg-stone-100 rounded-3xl aspect-[4/3] w-full overflow-hidden relative group shadow-lg">
+               <img 
+                 src="/assets/images/organic_dragon_fruit_farm_1780802343880.png" 
+                 alt="Kebun Buah Naga Organik Sukorejo" 
+                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+               />
+               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
+               <span className="absolute bottom-6 left-6 text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                 <Leaf size={14} />
                  Kebun Organik Sukorejo
                </span>
             </div>
