@@ -97,7 +97,7 @@ Berdasarkan katalog di atas, jawab pertanyaan pelanggan berikut. Jika mereka men
     try {
       if (!API_KEY) throw new Error('API Key Gemini belum diatur.');
 
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
       const promptText = `${getSystemPrompt()}\n\nPelanggan: ${userMessage}`;
 
       const result = await model.generateContent(promptText);
@@ -162,7 +162,7 @@ Berdasarkan katalog di atas, jawab pertanyaan pelanggan berikut. Jika mereka men
       const audioPart = await fileToGenerativePart(audioBlob);
       const promptText = `${getSystemPrompt()}\n\nPelanggan mengirimkan pesan suara. Dengarkan dengan saksama dan tanggapi pertanyaannya dalam bahasa Indonesia yang ramah dan membantu.`;
 
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
       const result = await model.generateContent([promptText, audioPart]);
       const text = result.response.text();
 
