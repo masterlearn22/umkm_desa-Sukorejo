@@ -18,7 +18,7 @@ const Hero = () => {
   const [swiperInstance, setSwiperInstance] = useState(null);
 
   return (
-    <div className="w-full bg-[#f4f2ec] py-6 lg:py-24 overflow-hidden relative flex flex-col lg:flex-row items-center lg:min-h-[80vh]">
+    <div className="w-full bg-[#f4f2ec] py-12 lg:py-16 overflow-hidden relative flex flex-col lg:flex-row items-center">
       
       {/* Left Text Content */}
       <div className="w-full lg:w-5/12 px-4 sm:px-8 lg:pl-16 xl:pl-32 z-10 mb-8 lg:mb-0 flex flex-col justify-center">
@@ -43,7 +43,7 @@ const Hero = () => {
       </div>
 
       {/* Right Slider Container */}
-      <div className="w-full lg:w-7/12 lg:absolute lg:right-0 lg:top-0 lg:bottom-0 flex items-center pl-4 sm:pl-8 lg:pl-0">
+      <div className="w-full lg:w-7/12 flex items-center pl-4 sm:pl-8 lg:pl-0 lg:mt-0 mt-8">
         <div className="w-full">
           <Swiper
             modules={[Autoplay]}
@@ -68,7 +68,7 @@ const Hero = () => {
               <SwiperSlide key={index} className="flex justify-center items-center py-8" style={{ width: 'auto' }}>
                 {({ isActive }) => (
                   <div 
-                    className={`relative aspect-[3/4] h-[350px] sm:h-[400px] lg:h-[50vh] lg:min-h-[380px] max-h-[600px] rounded-2xl overflow-hidden shadow-2xl group transition-all duration-700 ease-out ${
+                    className={`relative aspect-[3/4] h-[350px] sm:h-[400px] lg:h-[450px] xl:h-[550px] rounded-2xl overflow-hidden shadow-2xl group transition-all duration-700 ease-out ${
                       isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-50'
                     }`}
                   >
