@@ -1,6 +1,7 @@
 import React from 'react';
 import { Leaf, Users, MapPin, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { resolveImageUrl } from '../utils/image';
 
 const AboutUs = () => {
   const { lang, t } = useLanguage();
@@ -29,7 +30,7 @@ const AboutUs = () => {
           <div className="w-full lg:w-1/2">
             <div className="bg-stone-100 rounded-3xl aspect-[4/3] w-full overflow-hidden relative group shadow-lg">
                <img 
-                 src="/assets/images/organic_dragon_fruit_farm_1780802343880.png" 
+                 src={resolveImageUrl("/assets/images/organic_dragon_fruit_farm_1780802343880.png")} 
                  alt="Kebun Buah Naga Organik Sukorejo" 
                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                />

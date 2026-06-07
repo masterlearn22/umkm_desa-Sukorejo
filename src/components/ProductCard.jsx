@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
+import { resolveImageUrl } from '../utils/image';
+
 const ProductCard = ({ product }) => {
   const { lang, t } = useLanguage();
 
@@ -38,7 +40,7 @@ const ProductCard = ({ product }) => {
         <div className="relative w-full aspect-[4/3] bg-stone-100 overflow-hidden">
           {product.Foto_URL ? (
             <img 
-              src={product.Foto_URL} 
+              src={resolveImageUrl(product.Foto_URL)} 
               alt={title} 
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
             />

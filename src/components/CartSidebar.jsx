@@ -3,6 +3,7 @@ import { X, Plus, Minus, Trash2, ArrowRight, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
+import { resolveImageUrl } from '../utils/image';
 
 const CartSidebar = ({ isOpen, onClose }) => {
   const { lang, t } = useLanguage();
@@ -68,9 +69,9 @@ const CartSidebar = ({ isOpen, onClose }) => {
             <div className="space-y-6">
               {cartItems.map(item => (
                 <div key={item.ID_Produk} className="flex gap-4 bg-white p-3 rounded-2xl border border-stone-100 shadow-sm">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-stone-100 flex-shrink-0">
+                  <div className="w-20 h-20 bg-stone-100 rounded-lg flex-shrink-0 overflow-hidden border border-stone-200">
                     {item.Foto_URL ? (
-                      <img src={item.Foto_URL} alt="Product" className="w-full h-full object-cover" />
+                      <img src={resolveImageUrl(item.Foto_URL)} alt={getProductName(item)} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-xs text-stone-400">Img</div>
                     )}

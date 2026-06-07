@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { ChevronDown, ChevronUp, Share2, HelpCircle, Leaf, ShieldCheck, MapPin, Recycle, Minus, Plus } from 'lucide-react';
+import { resolveImageUrl } from '../utils/image';
 
 const ProductDetail = ({ products }) => {
   const { id } = useParams();
@@ -88,7 +89,7 @@ const ProductDetail = ({ products }) => {
             <div className="bg-[#f4f2ec] rounded-[2rem] aspect-square flex items-center justify-center p-8 relative">
               {product.Foto_URL ? (
                 <img 
-                  src={product.Foto_URL} 
+                  src={resolveImageUrl(product.Foto_URL)} 
                   alt={title} 
                   className="w-full h-full object-contain drop-shadow-xl"
                 />

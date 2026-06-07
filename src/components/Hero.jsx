@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
+import { resolveImageUrl } from '../utils/image';
 
 import 'swiper/css';
 
@@ -72,8 +73,9 @@ const Hero = () => {
                       isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-50'
                     }`}
                   >
+                    <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 to-transparent z-10 rounded-2xl"></div>
                     <img 
-                      src={item.src} 
+                      src={resolveImageUrl(item.src)} 
                       alt={item.title} 
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                     />

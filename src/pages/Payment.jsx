@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { submitOrder } from '../services/api';
 import { generateWhatsAppLink } from '../utils/whatsapp';
 import { Send, ArrowLeft, Truck, CreditCard, MapPin, AlertTriangle } from 'lucide-react';
+import { resolveImageUrl } from '../utils/image';
 
 const Payment = () => {
   const { t, lang } = useLanguage();
@@ -234,7 +235,7 @@ const Payment = () => {
                   <div key={item.ID_Produk} className="flex gap-4">
                     <div className="w-20 h-20 bg-white rounded-xl overflow-hidden shrink-0 relative border border-stone-200">
                       {item.Foto_URL ? (
-                        <img src={item.Foto_URL} alt="Product" className="w-full h-full object-cover" />
+                        <img src={resolveImageUrl(item.Foto_URL)} alt={item.Nama_Indo} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full bg-stone-100 flex items-center justify-center text-[10px] text-stone-400">No Img</div>
                       )}
