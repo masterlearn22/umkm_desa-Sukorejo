@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children, requiredPermission }) => {
   }
 
   // If a specific permission is required, check if user has it
-  if (requiredPermission && user?.permissions) {
+  if (requiredPermission && user?.permissions && user.role !== 'admin') {
     if (!user.permissions[requiredPermission]) {
       // Redirect to home if user doesn't have required permission
       return <Navigate to="/" replace />;

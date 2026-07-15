@@ -3,16 +3,17 @@ const SHEET_PESANAN = "Pesanan";
 const SHEET_PENGGUNA = "Pengguna";
 const SHEET_PERMISSIONS = "Permissions";
 const SHEET_PENGAJUAN = "Pengajuan_Penjual";
+const SHEET_ARTIKEL = "Artikel";
 
 // Inisialisasi Tabel Izin Default
 function initPermissions() {
   let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PERMISSIONS);
   if (!sheet) {
     sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet(SHEET_PERMISSIONS);
-    sheet.appendRow(["Role", "ManageProducts", "ManageOrders", "ManageUsers"]);
-    sheet.appendRow(["admin", true, true, true]);
-    sheet.appendRow(["penjual", true, true, false]);
-    sheet.appendRow(["user", false, false, false]);
+    sheet.appendRow(["Role", "ManageProducts", "ManageOrders", "ManageUsers", "ManageArticles"]);
+    sheet.appendRow(["admin", true, true, true, true]);
+    sheet.appendRow(["penjual", true, true, false, false]);
+    sheet.appendRow(["user", false, false, false, false]);
   }
   return sheet;
 }
@@ -20,7 +21,7 @@ function initPermissions() {
 function getPermissionsObject(roleName) {
   const sheet = initPermissions();
   const data = sheet.getDataRange().getValues();
-  let perms = { ManageProducts: false, ManageOrders: false, ManageUsers: false };
+  let perms = { ManageProducts: false, ManageOrders: false, ManageUsers: false, ManageArticles: false };
   
   for (let i = 1; i < data.length; i++) {
     if (data[i][0] === roleName) {
@@ -28,6 +29,7 @@ function getPermissionsObject(roleName) {
         ManageProducts: data[i][1] === true || data[i][1] === "TRUE" || data[i][1] === "true",
         ManageOrders: data[i][2] === true || data[i][2] === "TRUE" || data[i][2] === "true",
         ManageUsers: data[i][3] === true || data[i][3] === "TRUE" || data[i][3] === "true",
+        ManageArticles: data[i][4] === true || data[i][4] === "TRUE" || data[i][4] === "true",
       };
       break;
     }
@@ -57,10 +59,6 @@ function doGet(e) {
   }
 }
 
-function getColIndex(headers, colName) {
-  return headers.findIndex(h => String(h).trim().toLowerCase() === colName.trim().toLowerCase());
-}
-
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
@@ -68,87 +66,69 @@ function doPost(e) {
 
     // 1. REGISTRASI PENGGUNA BARU
     if (action === 'register') {
-      let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PENGGUNA);
-      if (!sheet) {
-        sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet(SHEET_PENGGUNA);
-        sheet.appendRow(["Waktu_Daftar", "Nama_Lengkap", "Nomor_WA", "Email", "Password_Hash", "Alamat", "Role", "ID_Pengguna", "Jenis_Kelamin", "Tanggal_Lahir"]);
+      let targetSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PENGGUNA);
+      if (!targetSheet) {
+        targetSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet(SHEET_PENGGUNA);
+        targetSheet.appendRow(["Waktu_Daftar", "Nama_Lengkap", "Nomor_WA", "Email", "Password_Hash", "Alamat", "Role", "ID_Pengguna", "Jenis_Kelamin", "Tanggal_Lahir"]);
       }
 
-      const headers = sheet.getDataRange().getValues()[0];
-      let newRow = new Array(headers.length).fill("");
-      
-      headers.forEach((h, i) => {
-        const col = String(h).trim().toLowerCase();
-        if (col === "waktu_daftar") newRow[i] = payload.timestamp || new Date().toISOString();
-        else if (col === "nama_lengkap") newRow[i] = payload.name;
-        else if (col === "nomor_wa") newRow[i] = "'" + payload.phone;
-        else if (col === "email") newRow[i] = payload.email;
-        else if (col === "password_hash") newRow[i] = payload.password;
-        else if (col === "alamat") newRow[i] = payload.address || "";
-        else if (col === "role") newRow[i] = "user";
-        else if (col === "id_pengguna") newRow[i] = "USR-" + new Date().getTime();
-      });
+      const role = "user";
+      const idPengguna = "USR-" + new Date().getTime();
 
-      sheet.appendRow(newRow);
+      targetSheet.appendRow([
+        payload.timestamp,
+        payload.name,
+        "'" + payload.phone, 
+        payload.email,
+        payload.password,
+        payload.address,
+        role,
+        idPengguna,
+        "", // Jenis Kelamin
+        ""  // Tanggal Lahir
+      ]);
+
       return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
     }
     
     // 2. LOGIN
     else if (action === 'login') {
-      let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PENGGUNA);
-      if (!sheet) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Database pengguna belum siap." })).setMimeType(ContentService.MimeType.JSON);
+      let targetSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PENGGUNA);
+      if (!targetSheet) {
+        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Database pengguna belum siap." })).setMimeType(ContentService.MimeType.JSON);
+      }
       
-      const data = sheet.getDataRange().getValues();
-      const headers = data[0];
-      const idxEmail = getColIndex(headers, "Email");
-      const idxPass = getColIndex(headers, "Password_Hash");
-      const idxRole = getColIndex(headers, "Role");
-      const idxName = getColIndex(headers, "Nama_Lengkap");
-      const idxPhone = getColIndex(headers, "Nomor_WA");
-      const idxAddress = getColIndex(headers, "Alamat");
-      const idxId = getColIndex(headers, "ID_Pengguna");
-      const idxGender = getColIndex(headers, "Jenis_Kelamin");
-      const idxDob = getColIndex(headers, "Tanggal_Lahir");
-      
-      if (idxEmail === -1 || idxPass === -1) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Kolom Email/Password tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
-
+      const data = targetSheet.getDataRange().getValues();
       let foundUser = null;
       let userRole = "user";
       
       for (let i = 1; i < data.length; i++) {
         const row = data[i];
-        if (String(row[idxEmail]).trim().toLowerCase() === String(payload.email).trim().toLowerCase() && 
-            String(row[idxPass]).trim() === String(payload.password).trim()) {
-          
-          userRole = (idxRole !== -1 && row[idxRole]) ? row[idxRole].toString().toLowerCase() : "user";
+        if (String(row[3]).trim() === String(payload.email).trim() && String(row[4]).trim() === String(payload.password).trim()) {
+          userRole = row[6] ? row[6].toString().toLowerCase() : "user";
           foundUser = {
-            name: idxName !== -1 ? row[idxName] : "",
-            phone: idxPhone !== -1 && row[idxPhone] ? row[idxPhone].toString().replace("'", "") : "",
-            email: row[idxEmail],
-            address: idxAddress !== -1 ? row[idxAddress] : "",
+            name: row[1],
+            phone: row[2] ? row[2].toString().replace("'", "") : "",
+            email: row[3],
+            address: row[5],
             role: userRole,
-            id_pengguna: idxId !== -1 ? row[idxId] : "",
-            gender: idxGender !== -1 ? row[idxGender] : "",
-            dob: idxDob !== -1 && row[idxDob] ? new Date(row[idxDob]).toISOString().split('T')[0] : ""
+            id_pengguna: row[7] || "",
+            gender: row[8] || "",
+            dob: row[9] ? new Date(row[9]).toISOString().split('T')[0] : ""
           };
           break;
         }
       }
       
       if (foundUser) {
+        // Cek juga nama toko di pengajuan (jika dia penjual)
         if (userRole === 'penjual') {
           let sheetPengajuan = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PENGAJUAN);
           if (sheetPengajuan) {
             const dataPengajuan = sheetPengajuan.getDataRange().getValues();
-            const hPengajuan = dataPengajuan[0];
-            const pIdxEmail = getColIndex(hPengajuan, "Email_Pengguna");
-            const pIdxStatus = getColIndex(hPengajuan, "Status_Pengajuan");
-            const pIdxToko = getColIndex(hPengajuan, "Nama_Toko");
-            
             for (let j = 1; j < dataPengajuan.length; j++) {
-              if (String(dataPengajuan[j][pIdxEmail]).toLowerCase() === String(payload.email).toLowerCase() && 
-                  dataPengajuan[j][pIdxStatus] === 'Disetujui') {
-                foundUser.shopName = dataPengajuan[j][pIdxToko];
+              if (String(dataPengajuan[j][2]) === String(payload.email) && dataPengajuan[j][6] === 'Disetujui') {
+                foundUser.shopName = dataPengajuan[j][3]; // Nama Toko
                 break;
               }
             }
@@ -156,7 +136,11 @@ function doPost(e) {
         }
 
         const permissions = getPermissionsObject(userRole);
-        return ContentService.createTextOutput(JSON.stringify({ status: "success", user: foundUser, permissions: permissions })).setMimeType(ContentService.MimeType.JSON);
+        return ContentService.createTextOutput(JSON.stringify({ 
+          status: "success", 
+          user: foundUser,
+          permissions: permissions 
+        })).setMimeType(ContentService.MimeType.JSON);
       } else {
         return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Email atau Password salah, atau pengguna tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
       }
@@ -168,41 +152,26 @@ function doPost(e) {
       if (!sheet) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Sheet Pengguna tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
       
       const data = sheet.getDataRange().getValues();
-      const headers = data[0];
-      const idxEmail = getColIndex(headers, "Email");
-      
       let found = false;
+      
       for (let i = 1; i < data.length; i++) {
-        if (String(data[i][idxEmail]).trim().toLowerCase() === String(payload.email).trim().toLowerCase()) {
-          // Cari indeks tiap kolom yang ingin diupdate dan set nilainya jika ketemu
-          if (payload.name !== undefined) {
-             const c = getColIndex(headers, "Nama_Lengkap");
-             if (c !== -1) sheet.getRange(i + 1, c + 1).setValue(payload.name);
-          }
-          if (payload.phone !== undefined) {
-             const c = getColIndex(headers, "Nomor_WA");
-             if (c !== -1) sheet.getRange(i + 1, c + 1).setValue("'" + payload.phone);
-          }
-          if (payload.address !== undefined) {
-             const c = getColIndex(headers, "Alamat");
-             if (c !== -1) sheet.getRange(i + 1, c + 1).setValue(payload.address);
-          }
-          if (payload.gender !== undefined) {
-             const c = getColIndex(headers, "Jenis_Kelamin");
-             if (c !== -1) sheet.getRange(i + 1, c + 1).setValue(payload.gender);
-          }
-          if (payload.dob !== undefined) {
-             const c = getColIndex(headers, "Tanggal_Lahir");
-             if (c !== -1) sheet.getRange(i + 1, c + 1).setValue(payload.dob);
-          }
+        if (String(data[i][3]) === String(payload.email)) {
+          if (payload.name !== undefined) sheet.getRange(i + 1, 2).setValue(payload.name);
+          if (payload.phone !== undefined) sheet.getRange(i + 1, 3).setValue("'" + payload.phone);
+          if (payload.address !== undefined) sheet.getRange(i + 1, 6).setValue(payload.address);
+          if (payload.gender !== undefined) sheet.getRange(i + 1, 9).setValue(payload.gender);
+          if (payload.dob !== undefined) sheet.getRange(i + 1, 10).setValue(payload.dob);
           
           found = true;
           break;
         }
       }
       
-      if (found) return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
-      else return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Pengguna tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
+      if (found) {
+        return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
+      } else {
+        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Pengguna tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
+      }
     }
 
     // 4. UBAH PASSWORD
@@ -211,26 +180,25 @@ function doPost(e) {
       if (!sheet) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Sheet Pengguna tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
       
       const data = sheet.getDataRange().getValues();
-      const headers = data[0];
-      const idxEmail = getColIndex(headers, "Email");
-      const idxPass = getColIndex(headers, "Password_Hash");
-      
       let found = false;
       let oldPasswordMatch = false;
       
       for (let i = 1; i < data.length; i++) {
-        if (String(data[i][idxEmail]).trim().toLowerCase() === String(payload.email).trim().toLowerCase()) {
+        if (String(data[i][3]).trim() === String(payload.email).trim()) {
           found = true;
-          if (String(data[i][idxPass]).trim() === String(payload.oldPassword).trim()) {
+          let debugDbPass = String(data[i][4]).trim();
+          if (debugDbPass === String(payload.oldPassword).trim()) {
             oldPasswordMatch = true;
-            sheet.getRange(i + 1, idxPass + 1).setValue("'" + payload.newPassword);
+            sheet.getRange(i + 1, 5).setValue("'" + payload.newPassword);
           }
           break;
         }
       }
       
       if (!found) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Pengguna tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
-      if (!oldPasswordMatch) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Password lama salah." })).setMimeType(ContentService.MimeType.JSON);
+      if (!oldPasswordMatch) {
+         return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Password lama salah." })).setMimeType(ContentService.MimeType.JSON);
+      }
       
       return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
     }
@@ -243,21 +211,17 @@ function doPost(e) {
         sheet.appendRow(["Waktu_Pengajuan", "ID_Pengajuan", "Email_Pengguna", "Nama_Toko", "Deskripsi_Toko", "Alamat_Toko", "Status_Pengajuan"]);
       }
       
-      const headers = sheet.getDataRange().getValues()[0];
-      let newRow = new Array(headers.length).fill("");
+      const idPengajuan = "APP-" + new Date().getTime();
       
-      headers.forEach((h, i) => {
-        const col = String(h).trim().toLowerCase();
-        if (col === "waktu_pengajuan") newRow[i] = new Date().toISOString();
-        else if (col === "id_pengajuan") newRow[i] = "APP-" + new Date().getTime();
-        else if (col === "email_pengguna") newRow[i] = payload.email;
-        else if (col === "nama_toko") newRow[i] = payload.shopName;
-        else if (col === "deskripsi_toko") newRow[i] = payload.shopDescription;
-        else if (col === "alamat_toko") newRow[i] = payload.shopAddress;
-        else if (col === "status_pengajuan") newRow[i] = "Pending";
-      });
-      
-      sheet.appendRow(newRow);
+      sheet.appendRow([
+        new Date().toISOString(),
+        idPengajuan,
+        payload.email,
+        payload.shopName,
+        payload.shopDescription,
+        payload.shopAddress,
+        "Pending"
+      ]);
       return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -267,14 +231,17 @@ function doPost(e) {
       if (!sheet) return ContentService.createTextOutput("[]").setMimeType(ContentService.MimeType.JSON);
       
       const data = sheet.getDataRange().getValues();
-      const headers = data[0];
       const apps = [];
       for (let i = 1; i < data.length; i++) {
-        let app = {};
-        headers.forEach((h, j) => {
-          app[h] = data[i][j];
+        apps.push({
+          Waktu_Pengajuan: data[i][0],
+          ID_Pengajuan: data[i][1],
+          Email_Pengguna: data[i][2],
+          Nama_Toko: data[i][3],
+          Deskripsi_Toko: data[i][4],
+          Alamat_Toko: data[i][5],
+          Status_Pengajuan: data[i][6]
         });
-        apps.push(app);
       }
       return ContentService.createTextOutput(JSON.stringify(apps)).setMimeType(ContentService.MimeType.JSON);
     }
@@ -287,18 +254,13 @@ function doPost(e) {
       if (!sheetApp || !sheetUser) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Sheet tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
       
       const dataApp = sheetApp.getDataRange().getValues();
-      const hApp = dataApp[0];
-      const idxAppId = getColIndex(hApp, "ID_Pengajuan");
-      const idxAppStatus = getColIndex(hApp, "Status_Pengajuan");
-      const idxAppEmail = getColIndex(hApp, "Email_Pengguna");
-      
       let emailUser = "";
       
       // Update status di tabel pengajuan
       for (let i = 1; i < dataApp.length; i++) {
-        if (dataApp[i][idxAppId] === payload.idPengajuan) {
-          if (idxAppStatus !== -1) sheetApp.getRange(i + 1, idxAppStatus + 1).setValue(payload.newStatus);
-          emailUser = dataApp[i][idxAppEmail];
+        if (dataApp[i][1] === payload.idPengajuan) {
+          sheetApp.getRange(i + 1, 7).setValue(payload.newStatus); // Status kolom ke-7
+          emailUser = dataApp[i][2]; // Email kolom ke-3
           break;
         }
       }
@@ -306,13 +268,9 @@ function doPost(e) {
       // Jika disetujui, update role di tabel pengguna
       if (emailUser && payload.newStatus === 'Disetujui') {
         const dataUser = sheetUser.getDataRange().getValues();
-        const hUser = dataUser[0];
-        const idxUserEmail = getColIndex(hUser, "Email");
-        const idxUserRole = getColIndex(hUser, "Role");
-        
         for (let j = 1; j < dataUser.length; j++) {
-          if (dataUser[j][idxUserEmail] === emailUser) {
-            if (idxUserRole !== -1) sheetUser.getRange(j + 1, idxUserRole + 1).setValue("penjual");
+          if (dataUser[j][3] === emailUser) {
+            sheetUser.getRange(j + 1, 7).setValue("penjual");
             break;
           }
         }
@@ -321,40 +279,26 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    // 8. ORDER
+    // 8. PESANAN
     else if (action === 'order') {
-      let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PESANAN);
-      if (!sheet) {
-        sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet(SHEET_PESANAN);
-        sheet.appendRow([
+      let targetSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PESANAN);
+      if (!targetSheet) {
+        targetSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet(SHEET_PESANAN);
+        targetSheet.appendRow([
           "Waktu", "Order_ID", "Nama_Pelanggan", "Nomor_WA", "Email", 
           "Alamat", "Kurir", "Metode_Pembayaran", "Total_Harga", "Catatan", "Detail_Produk"
         ]);
       }
-      const headers = sheet.getDataRange().getValues()[0];
-      let newRow = new Array(headers.length).fill("-");
       const detailProduk = payload.cartItems ? payload.cartItems.map(item => item.name + " (x" + item.quantity + ")").join(", ") : "-";
-      
-      headers.forEach((h, i) => {
-        const col = String(h).trim().toLowerCase();
-        if (col === "waktu") newRow[i] = payload.timestamp || new Date().toISOString();
-        else if (col === "order_id") newRow[i] = payload.orderId || "-";
-        else if (col === "nama_pelanggan") newRow[i] = payload.name || "-";
-        else if (col === "nomor_wa") newRow[i] = "'" + (payload.phone || "-");
-        else if (col === "email") newRow[i] = payload.email || "-";
-        else if (col === "alamat") newRow[i] = payload.address || "-";
-        else if (col === "kurir") newRow[i] = payload.courier || "-";
-        else if (col === "metode_pembayaran") newRow[i] = payload.paymentMethod || "-";
-        else if (col === "total_harga") newRow[i] = payload.totalPrice || 0;
-        else if (col === "catatan") newRow[i] = payload.notes || "-";
-        else if (col === "detail_produk") newRow[i] = detailProduk;
-      });
-      
-      sheet.appendRow(newRow);
+      targetSheet.appendRow([
+        payload.timestamp, payload.orderId || "-", payload.name || "-", "'" + (payload.phone || "-"), 
+        payload.email || "-", payload.address || "-", payload.courier || "-", payload.paymentMethod || "-",
+        payload.totalPrice || 0, payload.notes || "-", detailProduk
+      ]);
       return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
     }
-    
-    // 9. GET ORDERS
+
+    // 9. DAPATKAN SEMUA PESANAN
     else if (action === 'get_orders') {
       let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PESANAN);
       if (!sheet) return ContentService.createTextOutput("[]").setMimeType(ContentService.MimeType.JSON);
@@ -368,65 +312,159 @@ function doPost(e) {
       }
       return ContentService.createTextOutput(JSON.stringify(orders)).setMimeType(ContentService.MimeType.JSON);
     }
-    
-    // 10. GET USERS
+
+    // 10. DAPATKAN SEMUA PENGGUNA
     else if (action === 'get_users') {
       let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PENGGUNA);
       if (!sheet) return ContentService.createTextOutput("[]").setMimeType(ContentService.MimeType.JSON);
       const data = sheet.getDataRange().getValues();
-      const headers = data[0];
       const users = [];
       for (let i = 1; i < data.length; i++) {
-        let user = {};
-        for (let j = 0; j < headers.length; j++) { user[headers[j]] = data[i][j]; }
-        users.push(user);
+        users.push({
+          Waktu_Daftar: data[i][0], Nama_Lengkap: data[i][1], Nomor_WA: data[i][2],
+          Email: data[i][3], Alamat: data[i][5], Role: data[i][6] || "user", ID_Pengguna: data[i][7] || ""
+        });
       }
       return ContentService.createTextOutput(JSON.stringify(users)).setMimeType(ContentService.MimeType.JSON);
     }
-    
-    // 11. ADD PRODUCT
+
+    // 11. TAMBAH PRODUK (DIPERBAIKI)
     else if (action === 'add_product') {
       let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PRODUK);
       if (!sheet) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Sheet Produk tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
+      
       const headers = sheet.getDataRange().getValues()[0];
-      let newRow = new Array(headers.length).fill("-");
+      let newRow = new Array(headers.length).fill("-"); // Default nilai adalah "-"
+      
       headers.forEach((header, index) => {
         const h = header.toString().toLowerCase().trim();
         if (h === "id_produk") newRow[index] = "P" + new Date().getTime();
-        else if (h === "nama_indo" || h === "nama" || h === "nama produk") newRow[index] = payload.nama;
-        else if (h === "kategori") newRow[index] = payload.kategori;
-        else if (h === "harga_rp" || h === "harga") newRow[index] = payload.harga;
+        else if (h === "nama_indo" || h === "nama" || h === "nama produk") newRow[index] = payload.nama || "-";
+        else if (h === "kategori") newRow[index] = payload.kategori || "-";
+        else if (h === "harga_rp" || h === "harga") newRow[index] = payload.harga || 0;
         else if (h === "stok" || h === "berat_gram") newRow[index] = payload.stok || 1000;
-        else if (h === "foto_url" || h === "gambar" || h === "url gambar") newRow[index] = payload.gambar;
+        else if (h === "foto_url" || h === "gambar" || h === "url gambar") newRow[index] = payload.gambar || "-";
         else if (h === "status") newRow[index] = "Ready";
-        else if (h === "deskripsi_indo" || h === "deskripsi") newRow[index] = payload.deskripsi;
-        else if (h === "id_pengguna") newRow[index] = payload.id_pengguna;
+        else if (h === "deskripsi_indo" || h === "deskripsi") newRow[index] = payload.deskripsi || "-";
+        else if (h === "id_pengguna") newRow[index] = payload.id_pengguna || "-";
       });
+      
       sheet.appendRow(newRow);
       return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
     }
-    
-    // 12. UPDATE ROLE
+
+    // 12. UPDATE ROLE PENGGUNA
     else if (action === 'update_role') {
       let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PENGGUNA);
       if (!sheet) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Sheet Pengguna tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
       const data = sheet.getDataRange().getValues();
-      const headers = data[0];
-      const idxEmail = getColIndex(headers, "Email");
-      const idxRole = getColIndex(headers, "Role");
-      
-      if (idxEmail === -1 || idxRole === -1) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Kolom Email/Role tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
-      
       let found = false;
       for (let i = 1; i < data.length; i++) {
-        if (String(data[i][idxEmail]).trim().toLowerCase() === String(payload.email).trim().toLowerCase()) {
-          sheet.getRange(i + 1, idxRole + 1).setValue(payload.new_role);
+        if (data[i][3] === payload.email) {
+          sheet.getRange(i + 1, 7).setValue(payload.new_role);
           found = true;
           break;
         }
       }
       if (found) return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
       else return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Pengguna tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 13. GET ARTIKEL
+    else if (action === 'get_articles') {
+      let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_ARTIKEL);
+      if (!sheet) return ContentService.createTextOutput("[]").setMimeType(ContentService.MimeType.JSON);
+      const data = sheet.getDataRange().getValues();
+      const headers = data[0];
+      const articles = [];
+      for (let i = 1; i < data.length; i++) {
+        let article = {};
+        for (let j = 0; j < headers.length; j++) { 
+          article[headers[j]] = data[i][j]; 
+        }
+        articles.push(article);
+      }
+      return ContentService.createTextOutput(JSON.stringify(articles)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 14. ADD ARTIKEL
+    else if (action === 'add_article') {
+      let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_ARTIKEL);
+      if (!sheet) {
+        sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet(SHEET_ARTIKEL);
+      }
+      
+      let data = sheet.getDataRange().getValues();
+      // Jika sheet kosong melompong, inisialisasi header
+      if (!data || !data[0] || data[0][0] === "") {
+        sheet.appendRow(["ID_Artikel", "Judul", "Konten", "Penulis", "Tanggal", "Gambar", "Status"]);
+        data = sheet.getDataRange().getValues();
+      }
+      
+      const headers = data[0];
+      let newRow = new Array(headers.length).fill("");
+      
+      headers.forEach((h, i) => {
+        const col = String(h).trim().toLowerCase();
+        if (col === "id_artikel") newRow[i] = "ART-" + new Date().getTime();
+        else if (col === "judul") newRow[i] = payload.judul || "";
+        else if (col === "konten") newRow[i] = payload.konten || "";
+        else if (col === "penulis") newRow[i] = payload.penulis || "Admin";
+        else if (col === "tanggal") newRow[i] = new Date().toISOString();
+        else if (col === "gambar") newRow[i] = payload.gambar || "";
+        else if (col === "status") newRow[i] = payload.status || "Draft";
+      });
+      sheet.appendRow(newRow);
+      return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 15. UPDATE ARTIKEL
+    else if (action === 'update_article') {
+      let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_ARTIKEL);
+      if (!sheet) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Sheet Artikel tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
+      
+      const data = sheet.getDataRange().getValues();
+      const headers = data[0];
+      let getColIdx = (name) => headers.findIndex(h => String(h).trim().toLowerCase() === name.trim().toLowerCase());
+      
+      const idxId = getColIdx("ID_Artikel");
+      
+      let found = false;
+      for (let i = 1; i < data.length; i++) {
+        if (data[i][idxId] === payload.id_artikel) {
+          if (payload.judul !== undefined) sheet.getRange(i + 1, getColIdx("Judul") + 1).setValue(payload.judul);
+          if (payload.konten !== undefined) sheet.getRange(i + 1, getColIdx("Konten") + 1).setValue(payload.konten);
+          if (payload.gambar !== undefined) sheet.getRange(i + 1, getColIdx("Gambar") + 1).setValue(payload.gambar);
+          if (payload.status !== undefined) sheet.getRange(i + 1, getColIdx("Status") + 1).setValue(payload.status);
+          
+          found = true;
+          break;
+        }
+      }
+      if (found) return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
+      else return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Artikel tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 16. DELETE ARTIKEL
+    else if (action === 'delete_article') {
+      let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_ARTIKEL);
+      if (!sheet) return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Sheet Artikel tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
+      
+      const data = sheet.getDataRange().getValues();
+      const headers = data[0];
+      let getColIdx = (name) => headers.findIndex(h => String(h).trim().toLowerCase() === name.trim().toLowerCase());
+      const idxId = getColIdx("ID_Artikel");
+      
+      let found = false;
+      for (let i = 1; i < data.length; i++) {
+        if (data[i][idxId] === payload.id_artikel) {
+          sheet.deleteRow(i + 1);
+          found = true;
+          break;
+        }
+      }
+      if (found) return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
+      else return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Artikel tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
     }
     
     // Fallback

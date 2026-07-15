@@ -53,6 +53,9 @@ const Navbar = ({ onCartClick }) => {
               <Link to="/tentang-kami" className={`text-xs font-bold uppercase tracking-widest transition-colors ${location.pathname === '/tentang-kami' ? 'text-stone-900 border-b-2 border-stone-900 pb-1' : 'text-stone-500 hover:text-stone-900'}`}>
                 {lang === 'en' ? 'ABOUT US' : 'TENTANG KAMI'}
               </Link>
+              <Link to="/artikel" className={`text-xs font-bold uppercase tracking-widest transition-colors ${location.pathname.startsWith('/artikel') ? 'text-stone-900 border-b-2 border-stone-900 pb-1' : 'text-stone-500 hover:text-stone-900'}`}>
+                {lang === 'en' ? 'ARTICLES' : 'ARTIKEL'}
+              </Link>
               {(user?.permissions?.ManageProducts || user?.permissions?.ManageOrders || user?.permissions?.ManageUsers) && (
                 <Link to="/dashboard" className={`text-xs font-bold uppercase tracking-widest transition-colors text-red-600 hover:text-red-800`}>
                   DASHBOARD

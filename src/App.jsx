@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import ProductDetail from './pages/ProductDetail';
 import AboutUs from './pages/AboutUs';
+import Articles from './pages/Articles';
+import ArticleDetail from './pages/ArticleDetail';
 import Payment from './pages/Payment';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -20,9 +22,12 @@ import ManageProducts from './pages/dashboard/ManageProducts';
 import ManageOrders from './pages/dashboard/ManageOrders';
 import ManageUsers from './pages/dashboard/ManageUsers';
 import ManageApplications from './pages/dashboard/ManageApplications';
+import ManageArticles from './pages/dashboard/ManageArticles';
+import ArticleEditor from './pages/dashboard/ArticleEditor';
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
 import { fetchProducts } from './services/api';
+import SEO from './components/SEO';
 import { useLanguage } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import AIChatbot from './components/AIChatbot';
@@ -56,6 +61,7 @@ const App = () => {
   return (
     <AuthProvider>
       <div className="min-h-screen flex flex-col bg-stone-50">
+        <SEO />
         <Navbar onCartClick={() => setIsCartOpen(true)} />
         
         <main className="flex-grow">
@@ -71,6 +77,8 @@ const App = () => {
             } />
             <Route path="/produk/:id" element={<ProductDetail products={products} />} />
             <Route path="/tentang-kami" element={<AboutUs />} />
+            <Route path="/artikel" element={<Articles />} />
+            <Route path="/artikel/:id" element={<ArticleDetail />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -112,6 +120,21 @@ const App = () => {
               <Route path="applications" element={
                 <ProtectedRoute requiredPermission="ManageUsers">
                   <ManageApplications />
+                </ProtectedRoute>
+              } />
+              <Route path="articles" element={
+                <ProtectedRoute requiredPermission="ManageArticles">
+                  <ManageArticles />
+                </ProtectedRoute>
+              } />
+              <Route path="articles/create" element={
+                <ProtectedRoute requiredPermission="ManageArticles">
+                  <ArticleEditor />
+                </ProtectedRoute>
+              } />
+              <Route path="articles/edit/:id" element={
+                <ProtectedRoute requiredPermission="ManageArticles">
+                  <ArticleEditor />
                 </ProtectedRoute>
               } />
             </Route>

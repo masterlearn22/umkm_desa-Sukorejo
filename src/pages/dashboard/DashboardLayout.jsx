@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LayoutDashboard, Package, ShoppingBag, Users, Store } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, Users, Store, FileText } from 'lucide-react';
 
 const DashboardLayout = () => {
   const { user } = useAuth();
@@ -31,6 +31,12 @@ const DashboardLayout = () => {
       path: '/dashboard/applications', 
       icon: <Store size={20} />, 
       show: user?.permissions?.ManageUsers 
+    },
+    { 
+      name: 'Artikel', 
+      path: '/dashboard/articles', 
+      icon: <FileText size={20} />, 
+      show: user?.permissions?.ManageArticles || user?.role === 'admin'
     }
   ];
 

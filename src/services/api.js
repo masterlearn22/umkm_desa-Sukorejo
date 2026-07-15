@@ -2,6 +2,28 @@
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyWr1hct7DW0SsCbi3e2V3pnlrcfXngg2rTX-NzP7V-0mWdYVdAx8fuqf01hhSawNS6GA/exec';
 
 // Since we might not have GAS deployed yet, we use mock data if fetch fails
+const mockArticles = [
+  {
+    ID_Artikel: 'ART-1700000001',
+    Judul: 'Potensi Wisata Desa Sukorejo',
+    Konten: 'Desa Sukorejo memiliki banyak potensi wisata, mulai dari agrowisata buah naga hingga kerajinan tangan lokal. Keindahan alam dan keramahan penduduk membuat desa ini cocok sebagai destinasi wisata akhir pekan.',
+    Penulis: 'Admin',
+    Tanggal: '2023-10-01T10:00:00.000Z',
+    Gambar: 'https://images.unsplash.com/photo-1596431940177-3e11f71df420?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    Status: 'Published'
+  },
+  {
+    ID_Artikel: 'ART-1700000002',
+    Judul: 'Cara Menanam Buah Naga',
+    Konten: 'Menanam buah naga membutuhkan perawatan khusus. Pastikan tanah cukup gembur dan mendapat sinar matahari yang cukup. Pemupukan rutin dengan kompos organik sangat disarankan untuk hasil panen optimal.',
+    Penulis: 'BUMDes',
+    Tanggal: '2023-10-15T10:00:00.000Z',
+    Gambar: 'https://images.unsplash.com/photo-1527325678964-54921661f888?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    Status: 'Published'
+  }
+];
+
+// Since we might not have GAS deployed yet, we use mock data if fetch fails
 const mockProducts = [
   {
     ID_Produk: 'P001',
@@ -529,3 +551,68 @@ export const addProduct = async (productData) => {
     return { status: "error", message: error.message };
   }
 };
+
+/**
+ * Fetch all articles from GAS
+ */
+export const fetchArticles = async () => {
+  try {
+    const payload = { action: 'get_articles' };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.warn("Failed to fetch articles from GAS. Using mock data.", error);
+    return new Promise(resolve => setTimeout(() => resolve([...mockArticles]), 800));
+  }
+};
+
+export const addArticle = async (articleData) => {
+  try {
+    const payload = { action: 'add_article', ...articleData };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    return await response.json();
+  } catch (error) {
+    console.warn("Failed to add article to GAS. Simulating success.", error);
+    return new Promise(resolve => setTimeout(() => resolve({ status: 'success' }), 800));
+  }
+};
+
+export const updateArticle = async (articleData) => {
+  try {
+    const payload = { action: 'update_article', ...articleData };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    return await response.json();
+  } catch (error) {
+    console.warn("Failed to update article in GAS. Simulating success.", error);
+    return new Promise(resolve => setTimeout(() => resolve({ status: 'success' }), 800));
+  }
+};
+
+export const deleteArticle = async (id_artikel) => {
+  try {
+    const payload = { action: 'delete_article', id_artikel };
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    return await response.json();
+  } catch (error) {
+    console.warn("Failed to delete article in GAS. Simulating success.", error);
+    return new Promise(resolve => setTimeout(() => resolve({ status: 'success' }), 800));
+  }
+};
+
