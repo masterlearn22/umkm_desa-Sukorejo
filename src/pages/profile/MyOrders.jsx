@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { fetchOrders } from '../../services/api';
-import { Store, MessageSquare } from 'lucide-react';
+import { Store, MessageSquare, ShoppingBag } from 'lucide-react';
 
 const TABS = [
   { id: 'all', label: 'Semua' },
