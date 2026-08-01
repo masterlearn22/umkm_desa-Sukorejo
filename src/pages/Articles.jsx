@@ -15,9 +15,10 @@ const Articles = () => {
       setLoading(true);
       try {
         const data = await fetchArticles();
-        // Only show published articles
+        // Only show published articles and sort by newest
         const published = data.filter(a => a.Status === 'Published');
-        setArticles(published);
+        const sortedArticles = published.sort((a, b) => new Date(b.Tanggal) - new Date(a.Tanggal));
+        setArticles(sortedArticles);
       } catch (error) {
         console.error("Failed to load articles:", error);
       } finally {
