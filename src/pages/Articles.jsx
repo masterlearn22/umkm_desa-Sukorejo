@@ -70,22 +70,21 @@ const Articles = () => {
           <div className="flex flex-col space-y-10">
             {articles.map((article) => (
               <div key={article.ID_Artikel} className="group flex flex-col md:flex-row gap-6 md:gap-8 pb-10 border-b border-stone-200 last:border-0 last:pb-0 items-start">
-                <div className="w-full md:w-72 h-52 md:h-48 flex-shrink-0 bg-stone-100 rounded-xl overflow-hidden relative">
-                  {article.Gambar ? (
+                {article.Gambar && (
+                  <div className="w-full md:w-72 h-52 md:h-48 flex-shrink-0 bg-stone-100 rounded-xl overflow-hidden relative">
                     <img 
                       src={article.Gambar} 
                       alt={article.Judul} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        e.target.parentElement.style.display = 'none';
+                      }}
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-stone-400">
-                      <span>No Image</span>
+                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-stone-700 shadow-sm">
+                      Kabar Desa
                     </div>
-                  )}
-                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-stone-700 shadow-sm">
-                    Kabar Desa
                   </div>
-                </div>
+                )}
                 
                 <div className="flex flex-col flex-grow py-1">
                   <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-3 group-hover:text-emerald-700 transition-colors leading-tight">
