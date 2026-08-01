@@ -67,10 +67,10 @@ const Articles = () => {
             Belum ada artikel yang dipublikasikan saat ini.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex flex-col space-y-10">
             {articles.map((article) => (
-              <div key={article.ID_Artikel} className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group">
-                <div className="relative h-56 overflow-hidden bg-stone-200">
+              <div key={article.ID_Artikel} className="group flex flex-col md:flex-row gap-6 md:gap-8 pb-10 border-b border-stone-200 last:border-0 last:pb-0 items-start">
+                <div className="w-full md:w-72 h-52 md:h-48 flex-shrink-0 bg-stone-100 rounded-xl overflow-hidden relative">
                   {article.Gambar ? (
                     <img 
                       src={article.Gambar} 
@@ -82,37 +82,39 @@ const Articles = () => {
                       <span>No Image</span>
                     </div>
                   )}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-stone-700 shadow-sm">
+                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-stone-700 shadow-sm">
                     Kabar Desa
                   </div>
                 </div>
                 
-                <div className="p-6 flex flex-col flex-grow">
-                  <h2 className="text-xl font-bold text-stone-900 mb-3 line-clamp-2 leading-snug group-hover:text-emerald-700 transition-colors">
-                    {article.Judul}
+                <div className="flex flex-col flex-grow py-1">
+                  <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-3 group-hover:text-emerald-700 transition-colors leading-tight">
+                    <Link to={`/artikel/${article.ID_Artikel}`}>
+                      {article.Judul}
+                    </Link>
                   </h2>
                   
-                  <div className="flex items-center text-xs text-stone-500 mb-4 space-x-4">
+                  <div className="flex items-center text-sm text-stone-500 mb-4 space-x-5">
                     <div className="flex items-center">
-                      <User size={14} className="mr-1.5" />
+                      <User size={16} className="mr-2" />
                       <span className="font-medium">{article.Penulis}</span>
                     </div>
                     <div className="flex items-center">
-                      <Calendar size={14} className="mr-1.5" />
+                      <Calendar size={16} className="mr-2" />
                       <span>{new Date(article.Tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                     </div>
                   </div>
                   
-                  <p className="text-stone-600 text-sm mb-6 line-clamp-3 flex-grow leading-relaxed">
+                  <p className="text-stone-600 text-base mb-6 line-clamp-3 leading-relaxed">
                     {getExcerpt(article.Konten)}
                   </p>
                   
                   <Link 
                     to={`/artikel/${article.ID_Artikel}`}
-                    className="inline-flex items-center text-emerald-600 font-semibold hover:text-emerald-800 transition-colors mt-auto group/link"
+                    className="inline-flex items-center text-emerald-600 font-bold hover:text-emerald-800 transition-colors group/link mt-auto w-fit"
                   >
                     Baca Selengkapnya 
-                    <ArrowRight size={16} className="ml-1 transform group-hover/link:translate-x-1 transition-transform" />
+                    <ArrowRight size={18} className="ml-1.5 transform group-hover/link:translate-x-1.5 transition-transform" />
                   </Link>
                 </div>
               </div>
