@@ -17,8 +17,8 @@ const Payment = () => {
   
   const [formData, setFormData] = useState({
     notes: '',
-    courier: 'J&T Express',
-    paymentMethod: 'Transfer Bank'
+    courier: 'Antar Langsung (Khusus Desa)',
+    paymentMethod: 'COD (Bayar di Tempat)'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -163,7 +163,7 @@ const Payment = () => {
                   <Truck size={20} /> Jasa Pengiriman
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {['JNE Reguler', 'J&T Express', 'Antar Langsung (Khusus Desa)', 'Ambil di Tempat'].map((courierOption) => (
+                  {['Antar Langsung (Khusus Desa)', 'Ambil di Tempat'].map((courierOption) => (
                     <label key={courierOption} className={`relative flex cursor-pointer rounded-xl border p-4 transition-all ${formData.courier === courierOption ? 'border-stone-900 bg-stone-50' : 'border-stone-200 bg-white hover:border-stone-300'}`}>
                       <input 
                         type="radio" 
@@ -190,8 +190,8 @@ const Payment = () => {
                 <h2 className="text-lg font-bold font-heading text-stone-900 uppercase tracking-widest flex items-center gap-2 border-b border-stone-100 pb-4 mb-4">
                   <CreditCard size={20} /> Metode Pembayaran
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {['Transfer Bank', 'COD (Bayar di Tempat)', 'Cash'].map((methodOption) => (
+                <div className="grid grid-cols-1 gap-4">
+                  {['COD (Bayar di Tempat)'].map((methodOption) => (
                     <label key={methodOption} className={`relative flex cursor-pointer rounded-xl border p-4 transition-all ${formData.paymentMethod === methodOption ? 'border-stone-900 bg-stone-50' : 'border-stone-200 bg-white hover:border-stone-300'}`}>
                       <input 
                         type="radio" 
