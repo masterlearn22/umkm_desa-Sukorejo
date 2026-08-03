@@ -85,9 +85,8 @@ const Payment = () => {
       // 3. Clear cart
       clearCart();
 
-      // 4. Redirect to WA and go back home
-      window.open(waLink, '_blank');
-      navigate('/');
+      // 4. Redirect to WA
+      window.location.href = waLink;
     } catch (error) {
       console.error("Submission failed", error);
       alert("Terjadi kesalahan. Silakan coba lagi.");

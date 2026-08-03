@@ -50,12 +50,14 @@ function doGet(e) {
     let userWaMap = {};
     if (sheetPengguna) {
       const dataPengguna = sheetPengguna.getDataRange().getValues();
-      const headersPengguna = dataPengguna[0];
-      const idxIdPengguna = headersPengguna.indexOf("ID_Pengguna");
-      const idxWa = headersPengguna.indexOf("Nomor_WA");
-      if (idxIdPengguna !== -1 && idxWa !== -1) {
-        for (let k = 1; k < dataPengguna.length; k++) {
-          userWaMap[dataPengguna[k][idxIdPengguna]] = dataPengguna[k][idxWa] ? dataPengguna[k][idxWa].toString().replace("'", "") : "";
+      if (dataPengguna.length > 0) {
+        const headersPengguna = dataPengguna[0].map(h => String(h).trim().toLowerCase());
+        const idxIdPengguna = headersPengguna.findIndex(h => h === "id_pengguna" || h === "id pengguna");
+        const idxWa = headersPengguna.findIndex(h => h === "nomor_wa" || h === "nomor wa" || h === "no wa" || h === "whatsapp");
+        if (idxIdPengguna !== -1 && idxWa !== -1) {
+          for (let k = 1; k < dataPengguna.length; k++) {
+            userWaMap[dataPengguna[k][idxIdPengguna]] = dataPengguna[k][idxWa] ? dataPengguna[k][idxWa].toString().replace("'", "").trim() : "";
+          }
         }
       }
     }
