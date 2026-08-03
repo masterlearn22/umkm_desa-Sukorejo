@@ -53,7 +53,7 @@ function doGet(e) {
       if (dataPengguna.length > 0) {
         const headersPengguna = dataPengguna[0].map(h => String(h).trim().toLowerCase());
         const idxIdPengguna = headersPengguna.findIndex(h => h === "id_pengguna" || h === "id pengguna");
-        const idxWa = headersPengguna.findIndex(h => h === "nomor_wa" || h === "nomor wa" || h === "no wa" || h === "whatsapp");
+        const idxWa = headersPengguna.findIndex(h => h === "nomor_wa" || h === "nomor wa" || h === "no wa" || h === "whatsapp" || h === "nomor whatsapp");
         if (idxIdPengguna !== -1 && idxWa !== -1) {
           for (let k = 1; k < dataPengguna.length; k++) {
             userWaMap[dataPengguna[k][idxIdPengguna]] = dataPengguna[k][idxWa] ? dataPengguna[k][idxWa].toString().replace("'", "").trim() : "";
