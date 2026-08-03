@@ -528,4 +528,4 @@ function doOptions(e) {
     "Access-Control-Max-Age": "86400"
   };
   return ContentService.createTextOutput("").setMimeType(ContentService.MimeType.JSON).setHeaders(headers);
-}
+} 
