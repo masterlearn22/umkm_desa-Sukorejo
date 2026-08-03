@@ -1,9 +1,14 @@
 export const generateWhatsAppLink = (orderData, cartItems, cartTotal, lang) => {
   // Destination Phone Number (Dari Penjual Produk Pertama)
-  // Default to a fallback if somehow missing
-  const adminPhone = (cartItems.length > 0 && cartItems[0].Nomor_WA) 
+  let adminPhone = (cartItems.length > 0 && cartItems[0].Nomor_WA) 
     ? cartItems[0].Nomor_WA 
     : "6281234567890"; 
+  
+  // Format nomor WA (ubah 0 jadi 62)
+  adminPhone = adminPhone.toString().replace(/\D/g, '');
+  if (adminPhone.startsWith('0')) {
+    adminPhone = '62' + adminPhone.substring(1);
+  }
 
   const isId = lang === 'id';
   const greeting = isId 

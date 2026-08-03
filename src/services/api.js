@@ -56,6 +56,27 @@ export const fetchProducts = async () => {
     const response = await fetch(GAS_URL);
     if (!response.ok) throw new Error('Network response was not ok');
     let data = await response.json();
+    
+    // FALLBACK: If data lacks Nomor_WA (user hasn't deployed backend), fetch and merge
+    if (data.length > 0 && data[0].Nomor_WA === undefined) {
+      try {
+        const users = await fetchUsers();
+        const userMap = {};
+        users.forEach(u => {
+          if (u.ID_Pengguna && (u.Nomor_WA || u.Nomor_WhatsApp)) {
+            userMap[u.ID_Pengguna] = u.Nomor_WA || u.Nomor_WhatsApp;
+          }
+        });
+        
+        data = data.map(p => ({
+          ...p,
+          Nomor_WA: (p.ID_Pengguna && userMap[p.ID_Pengguna]) ? userMap[p.ID_Pengguna] : ""
+        }));
+      } catch (err) {
+        console.warn("Could not fetch users to map WA numbers");
+      }
+    }
+    
     return data;
   } catch (error) {
     console.warn("Failed to fetch from GAS. Falling back to mock data.", error);
