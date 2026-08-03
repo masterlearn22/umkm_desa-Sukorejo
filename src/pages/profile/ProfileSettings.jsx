@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { User } from 'lucide-react';
-import { updateProfileData } from '../../services/api';
+import { User, Camera } from 'lucide-react';
+import { updateProfileData, uploadImageToDrive } from '../../services/api';
 
 const ProfileSettings = () => {
   const { user, updateProfile } = useAuth();
@@ -25,10 +25,14 @@ const ProfileSettings = () => {
         email: user.email || '',
         phone: user.phone || '',
         gender: user.gender || 'Laki-laki',
-        dob: user.dob || ''
+        dob: user.dob || '',
+        avatar: user.avatar || ''
       });
     }
   }, [user]);
+
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState('');
 
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -38,12 +42,35 @@ const ProfileSettings = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      let uploadedAvatarUrl = formData.avatar;
+      
+      if (avatarFile) {
+        const reader = new FileReader();
+        const base64Data = await new Promise((resolve, reject) => {
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(avatarFile);
+        });
+        
+        const folderId = '1aeN-IgyXaE26tUDo5-I8hzLGC-OSS643'; // Folder Foto Profil
+        const resUpload = await uploadImageToDrive(base64Data, avatarFile.name, folderId);
+        
+        if (resUpload.status === 'success') {
+          uploadedAvatarUrl = resUpload.url;
+        } else {
+          alert('Gagal mengunggah foto profil: ' + resUpload.message);
+          setLoading(false);
+          return;
+        }
+      }
+
       const response = await updateProfileData({
         email: formData.email,
         name: formData.name,
         phone: formData.phone,
         gender: formData.gender,
-        dob: formData.dob
+        dob: formData.dob,
+        avatar: uploadedAvatarUrl
       });
       
       if (response.status === 'success') {
@@ -51,9 +78,11 @@ const ProfileSettings = () => {
           name: formData.name,
           phone: formData.phone,
           gender: formData.gender,
-          dob: formData.dob
+          dob: formData.dob,
+          avatar: uploadedAvatarUrl
         });
         alert('Profil berhasil diperbarui!');
+        setAvatarFile(null);
       } else {
         alert(response.message || 'Gagal memperbarui profil.');
       }
@@ -61,6 +90,19 @@ const ProfileSettings = () => {
       alert('Terjadi kesalahan koneksi.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 1 * 1024 * 1024) {
+        alert('Ukuran gambar maksimal 1 MB');
+        return;
+      }
+      setAvatarFile(file);
+      setAvatarPreview(URL.createObjectURL(file));
+      setFormData(prev => ({ ...prev, avatar: '' }));
     }
   };
 
@@ -108,6 +150,8 @@ const ProfileSettings = () => {
                 <input 
                   type="text" 
                   name="phone"
+                  required
+                  minLength={10}
                   value={formData.phone}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-stone-300 rounded focus:outline-none focus:border-stone-500 text-sm"
@@ -161,11 +205,21 @@ const ProfileSettings = () => {
         {/* Avatar Upload */}
         <div className="w-full md:w-64 border-l border-stone-100 flex flex-col items-center justify-start pt-4">
           <div className="w-28 h-28 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 overflow-hidden mb-4 border border-stone-200">
-            <User size={48} />
+            {(avatarPreview || formData.avatar) ? (
+              <img src={avatarPreview || formData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <User size={48} />
+            )}
           </div>
-          <button className="border border-stone-300 px-4 py-2 rounded bg-white text-stone-700 text-sm hover:bg-stone-50 font-medium transition-colors mb-4">
-            Pilih Gambar
-          </button>
+          <label className="cursor-pointer border border-stone-300 px-4 py-2 rounded bg-white text-stone-700 text-sm hover:bg-stone-50 font-medium transition-colors mb-4 flex items-center gap-2">
+            <Camera size={16} /> Pilih Gambar
+            <input 
+              type="file" 
+              accept="image/png, image/jpeg" 
+              className="hidden" 
+              onChange={handleAvatarChange} 
+            />
+          </label>
           <div className="text-xs text-stone-400 text-center">
             <p>Ukuran gambar: maks. 1 MB</p>
             <p>Format gambar: .JPEG, .PNG</p>

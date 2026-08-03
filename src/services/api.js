@@ -56,11 +56,6 @@ export const fetchProducts = async () => {
     const response = await fetch(GAS_URL);
     if (!response.ok) throw new Error('Network response was not ok');
     let data = await response.json();
-    // Simulate Nomor_WA if backend doesn't provide it
-    data = data.map((item, index) => ({
-      ...item,
-      Nomor_WA: item.Nomor_WA || `628123456789${index % 10}`
-    }));
     return data;
   } catch (error) {
     console.warn("Failed to fetch from GAS. Falling back to mock data.", error);
@@ -399,4 +394,27 @@ export const deleteArticle = async (id_artikel) => {
     return new Promise(resolve => setTimeout(() => resolve({ status: 'success' }), 800));
   }
 };
+
+export const uploadImageToDrive = async (base64Data, filename, folderId) => {
+  try {
+    const payload = {
+      action: 'upload_image',
+      base64Data,
+      filename,
+      folderId
+    };
+    
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error uploading image to drive:", error);
+    throw error;
+  }
+};
+
 

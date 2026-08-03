@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { fetchProducts, addProduct } from '../../services/api';
+import React, { useState, useEffect, useRef } from 'react';
+import { fetchProducts, addProduct, uploadImageToDrive } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { X } from 'lucide-react';
 
@@ -9,6 +9,8 @@ const ManageProducts = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
 
   // Form State
   const [formData, setFormData] = useState({
@@ -47,8 +49,37 @@ const ManageProducts = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
+    let uploadedImageUrl = formData.gambar;
+    
+    if (imageFile) {
+      try {
+        const reader = new FileReader();
+        const base64Data = await new Promise((resolve, reject) => {
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(imageFile);
+        });
+        
+        const folderId = '1PJYBiidiRyRVWPUoeWPG4JL-CifDfAFj'; // Folder Foto Produk
+        const resUpload = await uploadImageToDrive(base64Data, imageFile.name, folderId);
+        
+        if (resUpload.status === 'success') {
+          uploadedImageUrl = resUpload.url;
+        } else {
+          alert('Gagal mengunggah gambar: ' + resUpload.message);
+          setIsSubmitting(false);
+          return;
+        }
+      } catch (err) {
+        alert('Terjadi kesalahan saat mengunggah gambar.');
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     const payload = {
       ...formData,
+      gambar: uploadedImageUrl,
       id_pengguna: user?.id_pengguna || ''
     };
 
@@ -58,9 +89,23 @@ const ManageProducts = () => {
     if (res && res.status === 'success') {
       setIsModalOpen(false);
       setFormData({ nama: '', kategori: 'Fresh', harga: '', stok: '', gambar: '', deskripsi: '' });
+      setImageFile(null);
+      setImagePreview('');
       loadData(); // Refresh table
     } else {
       alert("Gagal menambahkan produk: " + (res?.message || "Unknown error"));
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Ukuran gambar maksimal 2MB');
+        return;
+      }
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -155,8 +200,13 @@ const ManageProducts = () => {
                 <input required type="number" name="harga" value={formData.harga} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all text-sm" placeholder="Contoh: 15000" />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1">URL Gambar</label>
-                <input required name="gambar" value={formData.gambar} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all text-sm" placeholder="Contoh: https://example.com/image.jpg" />
+                <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1">Unggah Gambar</label>
+                <input required={!imageFile} type="file" accept="image/png, image/jpeg" onChange={handleFileChange} className="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-stone-900 transition-all text-sm" />
+                {imagePreview && (
+                  <div className="mt-2">
+                    <img src={imagePreview} alt="Preview" className="h-32 object-contain rounded-lg border border-stone-200" />
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1">Deskripsi</label>

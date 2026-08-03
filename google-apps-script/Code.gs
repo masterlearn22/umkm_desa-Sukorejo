@@ -39,17 +39,36 @@ function getPermissionsObject(roleName) {
 
 function doGet(e) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PRODUK);
-    if (!sheet) return ContentService.createTextOutput("[]").setMimeType(ContentService.MimeType.JSON);
+    const sheetProduk = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PRODUK);
+    const sheetPengguna = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_PENGGUNA);
+    if (!sheetProduk) return ContentService.createTextOutput("[]").setMimeType(ContentService.MimeType.JSON);
 
-    const data = sheet.getDataRange().getValues();
-    const headers = data[0];
+    const dataProduk = sheetProduk.getDataRange().getValues();
+    const headersProduk = dataProduk[0];
     const products = [];
 
-    for (let i = 1; i < data.length; i++) {
+    let userWaMap = {};
+    if (sheetPengguna) {
+      const dataPengguna = sheetPengguna.getDataRange().getValues();
+      const headersPengguna = dataPengguna[0];
+      const idxIdPengguna = headersPengguna.indexOf("ID_Pengguna");
+      const idxWa = headersPengguna.indexOf("Nomor_WA");
+      if (idxIdPengguna !== -1 && idxWa !== -1) {
+        for (let k = 1; k < dataPengguna.length; k++) {
+          userWaMap[dataPengguna[k][idxIdPengguna]] = dataPengguna[k][idxWa] ? dataPengguna[k][idxWa].toString().replace("'", "") : "";
+        }
+      }
+    }
+
+    for (let i = 1; i < dataProduk.length; i++) {
       let product = {};
-      for (let j = 0; j < headers.length; j++) {
-        product[headers[j]] = data[i][j];
+      for (let j = 0; j < headersProduk.length; j++) {
+        product[headersProduk[j]] = dataProduk[i][j];
+      }
+      if (product.ID_Pengguna && userWaMap[product.ID_Pengguna]) {
+        product.Nomor_WA = userWaMap[product.ID_Pengguna];
+      } else {
+        product.Nomor_WA = "";
       }
       products.push(product);
     }
@@ -114,7 +133,8 @@ function doPost(e) {
             role: userRole,
             id_pengguna: row[7] || "",
             gender: row[8] || "",
-            dob: row[9] ? new Date(row[9]).toISOString().split('T')[0] : ""
+            dob: row[9] ? new Date(row[9]).toISOString().split('T')[0] : "",
+            avatar: row[10] || ""
           };
           break;
         }
@@ -161,6 +181,7 @@ function doPost(e) {
           if (payload.address !== undefined) sheet.getRange(i + 1, 6).setValue(payload.address);
           if (payload.gender !== undefined) sheet.getRange(i + 1, 9).setValue(payload.gender);
           if (payload.dob !== undefined) sheet.getRange(i + 1, 10).setValue(payload.dob);
+          if (payload.avatar !== undefined) sheet.getRange(i + 1, 11).setValue(payload.avatar);
           
           found = true;
           break;
@@ -465,6 +486,26 @@ function doPost(e) {
       }
       if (found) return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
       else return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Artikel tidak ditemukan." })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // 17. UPLOAD IMAGE TO DRIVE
+    else if (action === 'upload_image') {
+      try {
+        const folder = DriveApp.getFolderById(payload.folderId);
+        const base64String = payload.base64Data;
+        const contentType = base64String.substring(5, base64String.indexOf(';'));
+        const bytes = Utilities.base64Decode(base64String.split(',')[1]);
+        
+        const blob = Utilities.newBlob(bytes, contentType, payload.filename);
+        const file = folder.createFile(blob);
+        
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        
+        const fileUrl = "https://drive.google.com/uc?export=view&id=" + file.getId();
+        return ContentService.createTextOutput(JSON.stringify({ status: "success", url: fileUrl })).setMimeType(ContentService.MimeType.JSON);
+      } catch (err) {
+        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.message })).setMimeType(ContentService.MimeType.JSON);
+      }
     }
     
     // Fallback

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchArticles, addArticle, updateArticle } from '../../services/api';
+import { fetchArticles, addArticle, updateArticle, uploadImageToDrive } from '../../services/api';
 import { ArrowLeft, Save, Send, Image as ImageIcon, CheckCircle, Users } from 'lucide-react';
 import BlockEditor from '../../components/BlockEditor';
 import * as Y from 'yjs';
@@ -19,6 +19,8 @@ const ArticleEditor = () => {
   const [status, setStatus] = useState('Draft');
   const [blocks, setBlocks] = useState([]);
   const [peersCount, setPeersCount] = useState(1);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
 
   // Yjs Collaboration setup
   const ydocRef = useRef(null);
@@ -121,10 +123,39 @@ const ArticleEditor = () => {
     setSaving(true);
     const finalStatus = publish ? 'Published' : status;
     try {
+      let uploadedImageUrl = gambar;
+
+      if (imageFile) {
+        try {
+          const reader = new FileReader();
+          const base64Data = await new Promise((resolve, reject) => {
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(imageFile);
+          });
+          
+          const folderId = '13o9lPMpRRNtNfCSqK5f_X63R7SFQUil_'; // Folder Foto Artikel
+          const resUpload = await uploadImageToDrive(base64Data, imageFile.name, folderId);
+          
+          if (resUpload.status === 'success') {
+            uploadedImageUrl = resUpload.url;
+            setGambar(uploadedImageUrl);
+          } else {
+            alert('Gagal mengunggah gambar: ' + resUpload.message);
+            setSaving(false);
+            return;
+          }
+        } catch (err) {
+          alert('Terjadi kesalahan saat mengunggah gambar.');
+          setSaving(false);
+          return;
+        }
+      }
+
       const payload = {
         judul,
         penulis,
-        gambar,
+        gambar: uploadedImageUrl,
         status: finalStatus,
         konten: JSON.stringify(blocks)
       };
@@ -141,6 +172,19 @@ const ArticleEditor = () => {
       alert("Gagal menyimpan artikel.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Ukuran gambar maksimal 2MB');
+        return;
+      }
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+      setGambar(''); // Clear previous URL so preview takes precedence
     }
   };
 
@@ -204,30 +248,32 @@ const ArticleEditor = () => {
           
           {/* Cover Image Section */}
           <div className="group relative mb-8">
-            {gambar ? (
+            {(gambar || imagePreview) ? (
               <div className="relative h-64 rounded-2xl overflow-hidden shadow-sm">
-                <img src={gambar} alt="Cover" className="w-full h-full object-cover" />
+                <img src={imagePreview || gambar} alt="Cover" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <input 
-                    type="text" 
-                    value={gambar} 
-                    onChange={(e) => setGambar(e.target.value)} 
-                    placeholder="Paste URL Cover baru..."
-                    className="w-3/4 max-w-md px-4 py-2 rounded-lg bg-white/90 text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
+                  <label className="cursor-pointer px-4 py-2 rounded-lg bg-white/90 text-stone-900 shadow hover:bg-white transition-colors">
+                    <span className="text-sm font-bold">Ganti Gambar</span>
+                    <input 
+                      type="file" 
+                      accept="image/png, image/jpeg"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
               </div>
             ) : (
-              <div className="h-32 border-2 border-dashed border-stone-300 rounded-2xl flex flex-col items-center justify-center text-stone-400 hover:bg-stone-100 hover:border-emerald-400 hover:text-emerald-600 transition-colors group-hover:bg-stone-100">
+              <label className="cursor-pointer h-32 border-2 border-dashed border-stone-300 rounded-2xl flex flex-col items-center justify-center text-stone-400 hover:bg-stone-100 hover:border-emerald-400 hover:text-emerald-600 transition-colors group-hover:bg-stone-100 w-full block">
                 <ImageIcon size={32} className="mb-2" />
+                <span className="text-sm">Klik untuk unggah gambar cover</span>
                 <input 
-                  type="text" 
-                  value={gambar} 
-                  onChange={(e) => setGambar(e.target.value)} 
-                  placeholder="Paste URL gambar cover di sini..."
-                  className="bg-transparent border-b border-transparent focus:border-emerald-500 outline-none text-center w-64 placeholder-inherit text-sm"
+                  type="file" 
+                  accept="image/png, image/jpeg"
+                  onChange={handleFileChange}
+                  className="hidden"
                 />
-              </div>
+              </label>
             )}
           </div>
 
