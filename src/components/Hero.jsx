@@ -7,11 +7,11 @@ import { resolveImageUrl } from '../utils/image';
 import 'swiper/css';
 
 const heroImages = [
-  { src: 'https://drive.google.com/file/d/19OYYnOtXS_hhkiajrTMBdkSpFM_M7oSt/view?usp=sharing', title: 'UMKM Niki Echo' },
-  { src: 'https://drive.google.com/file/d/1p_nQ4Qc6hSROH4enUW-VvPlyfW2OXW4c/view?usp=sharing', title: 'UMKM Azya' },
-  { src: 'https://drive.google.com/file/d/1_XejJNTT1fR9Zv3X_SKANbVcAp5f4vL8/view?usp=sharing', title: 'UMKM Putri Maharani' },
-  { src: 'https://drive.google.com/file/d/1oU43YVQl_SYhZhRpjd2PSkZoSFBpJe7g/view?usp=sharing', title: 'UMKM Pelangi' },
-  { src: 'https://drive.google.com/file/d/1a_zQNEaVerC944xxxlcT_6Coag2SvDfl/view?usp=sharing', title: 'UMKM Berkah Mandiri' }
+  { src: '/assets/images/umkm_niki_echo.png', title: 'UMKM Niki Echo' },
+  { src: '/assets/images/umkm_azya.png', title: 'UMKM Azya' },
+  { src: '/assets/images/umkm_putri_maharani.png', title: 'UMKM Putri Maharani' },
+  { src: '/assets/images/umkm_pelangi.png', title: 'UMKM Pelangi' },
+  { src: '/assets/images/umkm_berkah_mandiri.png', title: 'UMKM Berkah Mandiri' }
 ];
 
 const Hero = () => {
