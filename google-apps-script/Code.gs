@@ -501,7 +501,7 @@ function doPost(e) {
         const blob = Utilities.newBlob(bytes, contentType, payload.filename);
         const file = folder.createFile(blob);
         
-        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        // file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
         
         const fileUrl = "https://drive.google.com/uc?export=view&id=" + file.getId();
         return ContentService.createTextOutput(JSON.stringify({ status: "success", url: fileUrl })).setMimeType(ContentService.MimeType.JSON);
@@ -528,4 +528,4 @@ function doOptions(e) {
     "Access-Control-Max-Age": "86400"
   };
   return ContentService.createTextOutput("").setMimeType(ContentService.MimeType.JSON).setHeaders(headers);
-} 
+}   
