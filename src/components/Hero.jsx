@@ -7,11 +7,11 @@ import { resolveImageUrl } from '../utils/image';
 import 'swiper/css';
 
 const heroImages = [
-  { src: '/assets/images/dragon_fruit_1780579681534.png', title: 'Buah Naga Merah Segar' },
-  { src: '/assets/images/dragon_fruit_seedling_1780579696787.png', title: 'Bibit Buah Naga Unggulan' },
-  { src: '/assets/images/dragon_fruit_juice_1780579713413.png', title: 'Jus Buah Naga Segar' },
-  { src: '/assets/images/dragon_fruit_jam_1780579726270.png', title: 'Selai Buah Naga Premium' },
-  { src: '/assets/images/dragon_fruit_chips_1780579741290.png', title: 'Keripik Buah Naga Renyah' }
+  { src: 'https://drive.google.com/file/d/19OYYnOtXS_hhkiajrTMBdkSpFM_M7oSt/view?usp=sharing', title: 'UMKM Niki Echo' },
+  { src: 'https://drive.google.com/file/d/1p_nQ4Qc6hSROH4enUW-VvPlyfW2OXW4c/view?usp=sharing', title: 'UMKM Azya' },
+  { src: 'https://drive.google.com/file/d/1_XejJNTT1fR9Zv3X_SKANbVcAp5f4vL8/view?usp=sharing', title: 'UMKM Putri Maharani' },
+  { src: 'https://drive.google.com/file/d/1oU43YVQl_SYhZhRpjd2PSkZoSFBpJe7g/view?usp=sharing', title: 'UMKM Pelangi' },
+  { src: 'https://drive.google.com/file/d/1a_zQNEaVerC944xxxlcT_6Coag2SvDfl/view?usp=sharing', title: 'UMKM Berkah Mandiri' }
 ];
 
 const Hero = () => {

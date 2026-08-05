@@ -4,24 +4,24 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const testimonials = [
   {
     name: 'BU ANI',
-    review: 'Kualitas buah naga dari Sukorejo memang luar biasa. Dagingnya tebal dan sangat manis. Anak-anak saya sangat menyukainya. Pengiriman juga sangat aman dan cepat sampai.',
-    productName: 'BUAH NAGA MERAH PAK TARNO',
+    review: 'Keripik sale pisang dari Niki Echo sangat renyah dan gurih, rasa manis pisangnya pas! Jadi camilan favorit keluarga saat kumpul.',
+    productName: 'SALE PISANG NIKI ECHO',
     image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop',
-    productIcon: '🍉'
+    productIcon: '🍌'
   },
   {
     name: 'PAK BUDI',
-    review: 'Saya mencoba membeli bibit unggul dari BUMDes ini, dan setelah beberapa bulan langsung berbuah lebat! Sangat direkomendasikan untuk yang hobi berkebun di rumah.',
-    productName: 'BIBIT BUAH NAGA UNGGULAN',
+    review: 'Madu mongso Niki Echo benar-benar legit dan manisnya alami, khas resep tradisional. Cocok banget buat hidangan pas ada tamu di rumah.',
+    productName: 'MADU MONGSO NIKI ECHO',
     image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop',
-    productIcon: '🌱'
+    productIcon: '🍯'
   },
   {
     name: 'SITI',
-    review: 'Cake buah naga lapis cokelatnya juara! Perpaduan rasa manis alami buah naga dan cokelat premiumnya sangat pas. Selalu jadi pesanan wajib kalau ada acara keluarga.',
-    productName: 'CAKE BUAH NAGA',
+    review: 'Inovasi dodol buah naga dari Azya ini unik banget! Teksturnya kenyal dan rasa buah naganya berasa banget tanpa pakai bahan pengawet.',
+    productName: 'DODOL BUAH NAGA AZYA',
     image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop',
-    productIcon: '🍰'
+    productIcon: '🍬'
   }
 ];
 
