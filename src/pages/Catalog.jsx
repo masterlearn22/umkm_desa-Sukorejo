@@ -18,9 +18,10 @@ const Catalog = ({
   // Categories & Statuses
   const categories = [
     { id: 'All', label: 'Semua Kategori' },
-    { id: 'Fresh', label: 'Segar' },
-    { id: 'Processed', label: 'Olahan' },
-    { id: 'Craft', label: 'Kerajinan & Bibit' },
+    { id: 'Oleh-oleh Khas', label: 'Oleh-oleh Khas' },
+    { id: 'Olahan Pisang', label: 'Olahan Pisang' },
+    { id: 'Camilan', label: 'Camilan' },
+    { id: 'Olahan Khas', label: 'Olahan Khas' },
   ];
 
   const statuses = [

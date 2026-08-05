@@ -15,7 +15,7 @@ const ManageProducts = () => {
   // Form State
   const [formData, setFormData] = useState({
     nama: '',
-    kategori: 'Fresh',
+    kategori: 'Oleh-oleh Khas',
     harga: '',
     stok: '',
     gambar: '',
@@ -88,7 +88,7 @@ const ManageProducts = () => {
 
     if (res && res.status === 'success') {
       setIsModalOpen(false);
-      setFormData({ nama: '', kategori: 'Fresh', harga: '', stok: '', gambar: '', deskripsi: '' });
+      setFormData({ nama: '', kategori: 'Oleh-oleh Khas', harga: '', stok: '', gambar: '', deskripsi: '' });
       setImageFile(null);
       setImagePreview('');
       loadData(); // Refresh table
@@ -185,9 +185,10 @@ const ManageProducts = () => {
                 <div>
                   <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1">Kategori</label>
                   <select required name="kategori" value={formData.kategori} onChange={handleChange} className="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all text-sm">
-                    <option value="Fresh">Fresh</option>
-                    <option value="Processed">Processed</option>
-                    <option value="Craft">Craft</option>
+                    <option value="Oleh-oleh Khas">Oleh-oleh Khas</option>
+                    <option value="Olahan Pisang">Olahan Pisang</option>
+                    <option value="Camilan">Camilan</option>
+                    <option value="Olahan Khas">Olahan Khas</option>
                   </select>
                 </div>
                 <div>
